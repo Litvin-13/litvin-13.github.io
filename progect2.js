@@ -1,136 +1,28 @@
 'use strict'
 
+document.body.style.margin = 0
 
-document.body.style.margin = 0// 40+'px'почему все получае -40???
+
+//счетчик игры
+var countTable= document.getElementsByClassName('forCount')[0]
+var counter = 0 
+countTable.innerHTML = `Ваш счет:${counter}`
+
+//игровое поле
 var field=document.getElementById('Table');
 var context=field.getContext('2d');
-// var bollRadius = 30 //нельзя ризиновый???
-var bollRadius = document.getElementById('Table1').offsetWidth
-var totalBolls = 9
+field.height = document.getElementById('Table1').offsetHeight*0.9
+field.width = document.getElementById('Table1').offsetWidth*0.99
+var totalBolls = 14//выбирать только четное количество шаров, важно для fieldCreate ()
 var totalFloors = 10
-field.width = (bollRadius*2)*totalBolls
-field.height = (bollRadius*2)*totalFloors+(bollRadius*2)
-field.style.border = '1px solid black'
-// var headBollPlace = (totalBolls/2)*(bollRadius*2)
+var bollRadius = field.offsetWidth/totalBolls/2
 
-//координаты клика мыши по полю
-
-// field.addEventListener('click',drawBoll,false)
-// function drawBoll(eo) {
-//     eo = eo||window.event
-//     var clickMouseX = eo.pageX-40;
-//     var clickMouseY = eo.pageY-40;
-// for (let k = 1; k <= Object.keys(pointFirstFloor).length; k++) {
-//     if (clickMouseX>=pointFirstFloor[k]['x мяча']&&clickMouseX<=(pointFirstFloor[k]['x мяча']+(bollRadius*2))&&clickMouseY>=pointFirstFloor[k]['y мяча']&&clickMouseY<=(pointFirstFloor[k]['y мяча']+(bollRadius*2))){
-//     context.clearRect(0,0,field.width,field.height)//перерисовываем
-//     context.fillStyle='yellow';
-//     context.fillRect(0,0,field.width,field.height);
-//     let bollC = 1; 
-//     let boll = 0;
-//     for (let i = 1; i <=totalBolls; i++) {//нашла нужный по клику мяч и перерисовала его, пока просто для проверки
-//         if (i===k) {
-//             context.fillStyle = 'white'
-//             context.beginPath()
-//             context.arc((field.offsetLeft+bollRadius-40+boll),(field.offsetTop+bollRadius-40),bollRadius,0,Math.PI*2, false)
-//             context.closePath()
-//             context.closePath()
-//             context.fill()
-//             pointFirstFloor[bollC] = 
-//             {'x мяча':(field.offsetLeft+bollRadius-40+boll-bollRadius),
-//             'y мяча':(field.offsetTop+bollRadius-40-bollRadius),
-//             }
-//             boll+=bollRadius*2
-//             bollC++   
-//         }
-//         context.fillStyle = bollColors[bollColorsFlor[bollC]]
-//         context.beginPath()
-//         context.arc((field.offsetLeft+bollRadius-40+boll),(field.offsetTop+bollRadius-40),bollRadius,0,Math.PI*2, false)
-//         context.closePath()
-//         context.closePath()
-//         context.fill()
-//         pointFirstFloor[bollC] = 
-//         {'x мяча':(field.offsetLeft+bollRadius-40+boll-bollRadius),
-//         'y мяча':(field.offsetTop+bollRadius-40-bollRadius),
-//         }
-//         boll+=bollRadius*2
-//         bollC++ 
-//         }   
-//     } 
-// }
-// }
-
-field.addEventListener('click',drawBoll,false) // проваерить, почему иногда исчезает главный шар и добавить совпадение по цветам шариков с главным шаром
-function drawBoll(eo) {
-    eo = eo||window.event
-    var clickMouseX = eo.pageX;
-    var clickMouseY = eo.pageY;
-
-for (let i = 1; i <=totalBolls; i++) {
-   for (let k= 0; k < totalFloors; k++) {
-    
-    if (clickMouseX>=pointFirstFloorStart[i][i][k]['x мяча']-bollRadius&&clickMouseX<=(pointFirstFloorStart[i][i][k]['x мяча']+bollRadius)&&clickMouseY>=pointFirstFloorStart[i][i][k]['y мяча']-bollRadius&&clickMouseY<=(pointFirstFloorStart[i][i][k]['y мяча']+bollRadius)){
-        console.log('попал');
-        context.clearRect(0,0,field.width,field.height)//перерисовываем
-        context.fillStyle='yellow';
-        context.fillRect(0,0,field.width,field.height);
-
-
-
-        let bollC = 1; 
-        let boll = 0;        
-    for (let i = 1; i <=totalBolls; i++) {
-        var b = 1
-        for (let k= 9; k >= 0; k--) {
-
-                context.fillStyle =bollColorsFlor[i][i][k]//рисуем шарики
-                context.beginPath()
-                context.arc((field.offsetLeft+bollRadius+boll),(field.offsetTop+bollRadius*b),bollRadius,0,Math.PI*2, false)
-                context.fill() 
-                b=b+2 
-        }
-            boll+=bollRadius*2
-            bollC++ 
-            }
-
-            if (bollColorsFlor[i][i][k]===bollColorHead[0]) {
-            context.fillStyle ='yellow'//рисуем шарик, по которому попали мышью
-            context.beginPath()
-            context.arc((pointFirstFloorStart[i][i][k]['x мяча']),(pointFirstFloorStart[i][i][k]['y мяча']),bollRadius+0.6,0,Math.PI*2, false)
-            context.fill() 
-            bollColorsFlor[i][i][k] = 'yellow'
-            bollColorHead[0] = bollColors[randomDiap(1,5)]
-            } else {
-                context.fillStyle =bollColorHead[0] 
-                context.beginPath()
-                context.arc((pointFirstFloorStart[i][i][k]['x мяча']),(pointFirstFloorStart[i][i][k]['y мяча']+bollRadius*2),bollRadius,0,Math.PI*2, false)
-                context.fill()  
-                // var pointFloor = []//нужно не совпадающий  мяч сохранить в объект мячей
-                // var x = pointFirstFloorStart[i][i][k]['x мяча']
-                // var y = pointFirstFloorStart[i][i][k]['y мяча']+bollRadius*2
-                // pointFloor.unshift({'x мяча':x,'y мяча':y})
-                // pointFirstFloorStart[i+1] = {[i]:pointFloor}
-                // console.log(pointFirstFloorStart[i]);
-                
-                bollColorHead[0] = bollColors[randomDiap(1,5)]
-            }
-
-            context.fillStyle =bollColorHead[0] 
-            context.beginPath()
-            context.arc(field.offsetWidth/2,(field.offsetHeight-bollRadius),bollRadius,0,Math.PI*2, false)
-            context.fill()  
-    
-  
-    }
+//получение случайного цвета
+function randomDiap(n,m) {
+    return Math.floor(
+      Math.random()*(m-n+1)
+      )+n;
 }
-}
-}
-
-
-//координаты первого ряда мячей 
-var pointFirstFloor = {}
-var pointFirstFloorStart = {}
-
-//рандомный цвет
 var bollColors = {
     1:'green',
     2:'grey',
@@ -139,225 +31,291 @@ var bollColors = {
     5:'black',
     6:'yellow'
 }
-var bollColorsFlor = {}
 
-var bollColorHead = {}
 
-function randomDiap(n,m) {
-    return Math.floor(
-      Math.random()*(m-n+1)
-      )+n;
-  }
-  
-//отрисовка при запуске
+//координаты и цвета мячей
+var pointBolls = {}
+var colorsBolls = {}
+var pointColorBolls = {}//можно будет убрать
+
+//характерстики главного шара. Потом обьединить в обьект или новый класс, переделать в обект главного мяча и добавть свойство - перересовка ховер в ТИК
+var headBollColor = ''
+var line = []
+var colorHover = 0
+
+var X = 0
+var ctg = 0
+var stopBollX = 0
+var stopBollY = 0
+var stopColor = ''
+
+function createPointColor(){
+//обнуление всех сохранений для начала игры
+counter = 0 
+stepDown=0.5  
+pointBolls = {}
+colorsBolls = {}
+pointColorBolls = {}//можно будет убрать
+headBollColor = ''
+line = []
+colorHover = 0
+X = 0
+ctg = 0
+stopBollX = 0
+stopBollY = 0
+stopColor = ''
+
+
+    var b = 1
+    for (let bollY= 1; bollY <= totalFloors; bollY++) {
+        var a = 1
+        pointBolls[bollY] = {}
+        colorsBolls[bollY] = {}
+        pointColorBolls[bollY] ={}
+        for (let bollX = 1; bollX <= totalBolls; bollX++) {
+            var colorBoll = bollColors[randomDiap(1,5)] 
+            var x = field.offsetLeft+bollRadius*a
+            var y = field.offsetTop+bollRadius*b
+            pointBolls[bollY][bollX] = {'x мяча':x,'y мяча':y}
+            colorsBolls[bollY][bollX]= colorBoll
+            pointColorBolls[bollY][bollX]= {[colorBoll]:{'x мяча':x,'y мяча':y}}
+            a = a+2            
+        }
+        b = b+2
+    }  
+        headBollColor = colorBoll//сохраняем полученный цвет главного шарика
+}
+createPointColor()
+
+function findColor(eo) {
+    eo = eo||window.event
+    var eoX = eo.pageX;
+    var eoY =eo.pageY;
+    X=0
+    for (let bollY= 1; bollY <= totalFloors; bollY++) {
+        for (let bollX = 1; bollX <= totalBolls; bollX++) {
+            if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
+                if (bollX>totalBolls/2) {
+                    ctg = (pointBolls[bollY][bollX]['x мяча']-field.offsetWidth/2)/(field.height-bollRadius-pointBolls[bollY][bollX]['y мяча'])                    
+                } else if (bollX<totalBolls/2){
+                    ctg = (field.offsetWidth/2-pointBolls[bollY][bollX]['x мяча'])/(field.height-bollRadius-pointBolls[bollY][bollX]['y мяча'])
+                }
+                stopBollX = bollX
+                stopBollY = bollY
+                stopColor = headBollColor
+            }
+        }
+    }  
+    headBollColor=bollColors[randomDiap(1,5)]
+}
+
+function changeColor() {
+    if (colorsBolls[stopBollY][stopBollX]===stopColor) {//здесь нужна еще проверка!!  так как заходит по второму кругу на colorsBolls[stopBollY][stopBollX]===stopColor  и делает шар желтым!!
+        colorsBolls[stopBollY][stopBollX]=bollColors[6]  
+        counter++                      
+    // тут начинается ошибка !!!
+    var iY = 1//убираем одинаковые шары по Y
+    if (stopBollY>1) {
+        while (colorsBolls[stopBollY-iY][stopBollX]===stopColor) {
+            colorsBolls[stopBollY-iY][stopBollX]=bollColors[6]
+            iY++ 
+            counter++                      
+        }
+    }
+    if (stopBollY<totalFloors) {
+    while (colorsBolls[stopBollY+iY][stopBollX]===stopColor) {
+        colorsBolls[stopBollY+iY][stopBollX]=bollColors[6]
+        iY++ 
+        counter++                      
+    } }
+    //убираем одинаковые шары по X 
+    var iX = 1
+    while (colorsBolls[stopBollY][stopBollX-iX]===stopColor) {
+        colorsBolls[stopBollY][stopBollX-iX] =bollColors[6]
+        iX ++
+        counter++                      
+    }  
+    while (colorsBolls[stopBollY][stopBollX+iX]===stopColor) {
+        colorsBolls[stopBollY][stopBollX+iX] =bollColors[6]
+        iX ++
+        counter++                      
+    }
+    }else {
+    colorsBolls[stopBollY][stopBollX]=stopColor
+    }
+}
+
+function mouseOverMove(eo) {
+   eo = eo||window.event
+    var eoX = eo.pageX;
+    var eoY =eo.pageY;
+    for (let bollY= 1; bollY <= totalFloors; bollY++) {
+        for (let bollX = 1; bollX <= totalBolls; bollX++) {
+            if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {                      
+            line = [pointBolls[bollY][bollX]['x мяча'],pointBolls[bollY][bollX]['y мяча']]
+            colorHover = colorsBolls[bollY][bollX]
+        }
+    }
+    }  
+    if (eo.pageY-bollRadius>pointBolls[totalFloors][totalBolls]['y мяча']){
+        line = []
+    }
+
+}
+
+
 function fieldCreate () {
     context.fillStyle='yellow';//поле
-    context.fillRect(0,0,field.width,field.height);
-    let bollC = 1; 
-    let boll = 0;
-    
-for (let i = 1; i <=totalBolls; i++) {
-    bollColorsFlor[i] = {}
-    var numberFloor = []
-    pointFirstFloorStart[i] = {}
-    var pointFloor = []
-    var x= 0
-    var y = 0
-    var c =1
-    for (let b = 1; b <=(totalFloors*2); b=b+2) {
-        var colorBoll = randomDiap(1,5)
-        context.fillStyle =bollColors[colorBoll]//рисуем шарик
-        context.beginPath()
-        context.arc((field.offsetLeft+bollRadius+boll),(field.offsetTop+bollRadius*b),bollRadius,0,Math.PI*2, false)
-        context.fill() 
-        numberFloor.unshift(bollColors[colorBoll])
-        x = field.offsetLeft+bollRadius+boll
-        y = field.offsetTop+bollRadius*b
-        pointFloor.unshift({'x мяча':x,'y мяча':y})
-
-        // pointFirstFloorStart[i] = //запомнить координаты каждого мяча!!!!
-        //     {'x мяча':(field.offsetLeft+bollRadius-40+boll-bollRadius),
-        //     'y мяча':(field.offsetTop+bollRadius-40+oneTick-bollRadius),
-        //     }  
-        c++
-    }
-        bollColorsFlor[i] = {[i]:numberFloor}
-        pointFirstFloorStart[i] = {[i]:pointFloor}
-        boll+=bollRadius*2
-        bollC++ 
+    context.fillRect(0,0,field.width,field.height);          
+    var b = 1
+    for (let bollY= 1; bollY <= totalFloors; bollY++) {
+        var a = 1
+        for (let bollX = 1; bollX <= totalBolls; bollX++) {//записываем координаты сместившихся на ряд мячей, которые мы видим
+            context.fillStyle = colorsBolls[bollY][bollX]
+            context.beginPath()
+            context.arc((field.offsetLeft+bollRadius*a),(bollRadius*b+stepDown-(bollRadius*2*totalFloors)),bollRadius,0,Math.PI*2, false)
+            context.fill() 
+            var x = field.offsetLeft+bollRadius*a
+            var y = bollRadius*b+stepDown-(bollRadius*2*totalFloors)
+            pointBolls[bollY][bollX] = {'x мяча':x,'y мяча':y}                
+            a = a+2         
         }
-        context.fillStyle =bollColors[colorBoll]//наверно нужен прелоад, так как при загрузке  - шарик спрятан наполовину
-        bollColorHead[0] = bollColors[colorBoll]//сохраняем полученный цвет рда
-        context.beginPath()
-        context.arc(field.offsetWidth/2,(field.offsetHeight-bollRadius),bollRadius,0,Math.PI*2, false)
-        context.fill()   
-        
+        b = b+2      
+    }  
+
+    context.fillStyle = headBollColor
+    context.beginPath()
+    context.arc(field.offsetWidth/2,(field.offsetHeight-bollRadius),bollRadius,0,Math.PI*2, false)
+    context.fill() 
+
+                if (stopBollX>totalBolls/2) {
+                    context.fillStyle = stopColor
+                    context.beginPath()
+                    context.arc((field.offsetWidth/2+X),((field.offsetHeight-bollRadius) -((field.offsetWidth/2+X)-field.offsetWidth/2)/ctg),bollRadius,0,Math.PI*2, false)//это расчет, если клик по Х после главного мяча
+                    context.fill() 
+                
+                } else if (stopBollX<=totalBolls/2){
+    
+                    context.fillStyle = stopColor
+                    context.beginPath()
+                    context.arc((field.offsetWidth/2-X),((field.offsetHeight-bollRadius) -(field.offsetWidth/2-(field.offsetWidth/2-X))/ctg),bollRadius,0,Math.PI*2, false)//это расчет, если клик по Х после главного мяча
+                    context.fill() 
+                } 
+}
+
+
+
+var stepDown = 0//скорость движения игры
+function getStart() {
+    createPointColor()//что-то удаляет сразу??
+    field.addEventListener('click',findColor,false)
+    field.addEventListener('mousemove',mouseOverMove,false)//вмето ховера
+} 
+
+
+setInterval(tick,40);
+function tick() { 
+    if (stepDown>=0.5) {
+        stepDown+=0.5 
+
+    } else if(stepDown===field.offsetHeight-bollRadius*2){
+        stepDown=0  
+
     }
+    countTable.innerHTML = `Ваш счет:${counter}`
+    if (stopBollX!==0&&stopBollY!==0) {//написать боле логично!!!!!!!! 
+        if (colorsBolls[stopBollY][stopBollX]===bollColors[6]) {
+            X=0 
+        } else if (stopBollX>totalBolls/2){
+            if ((field.offsetWidth/2+X)<pointBolls[stopBollY][stopBollX]['x мяча']) {
+                if(ctg>0,3){
+                    X=X+30//скорость летящего главного шара 
+                }else{
+                    X=X+10//скорость летящего главного шара 
+                }
+            }  
+            else if((field.offsetWidth/2+X)>=pointBolls[stopBollY][stopBollX]['x мяча']) {   
+                X=0
+                ctg = 0 
+                changeColor()
+            }      
+        } else  if (stopBollX<=totalBolls/2){//плохо летит, если stopBollX=totalBolls/2!!!!!!!! 
+                 if ((field.offsetWidth/2-X)>pointBolls[stopBollY][stopBollX]['x мяча']) {
+                    if(ctg>0,3){
+                        X=X+30//скорость летящего главного шара 
+                    }else{
+                        X=X+10//скорость летящего главного шара 
+                    }
+             }  
+             else if((field.offsetWidth/2-X)<=pointBolls[stopBollY][stopBollX]['x мяча']) {   
+                 X=0
+                 ctg = 0 
+                 changeColor()
+             }   
+        } 
+    }
+   
 
-       
+fieldCreate ()
 
-    fieldCreate()
-    
-    
-    var lastHeadBoll = 0
-    // var int = setInterval(tick,1000);
-    var oneTick = bollRadius*2
-    var step = 0
-    var colorHeadStep = {}
+            if ((pointBolls[totalFloors][totalBolls]['y мяча'])>field.offsetHeight-bollRadius*4) {//осановка игры -пересмотреть остановку!!!
+                stepDown=field.offsetHeight-bollRadius*2
+                context.fillStyle='black';
+                context.font=`italic bold 20px Arial` 
+                context.textAlign='center';         
+                context.fillText('Вы проиграли!',field.width/2,field.height/2);
+                field.removeEventListener('click',findColor,false)
+                field.removeEventListener('mousemove',mouseOverMove,false)//вмето ховера
 
-
-
-    // field.addEventListener('click',drawBollStart,false)
-    // function drawBollStart(eo) {
-          
-    //     eo = eo||window.event
-    //     var clickMouseX = eo.pageX-40;
-    //     var clickMouseY = eo.pageY-40;
-
-    // for (let k = 1; k <= Object.keys(pointFirstFloorStart).length; k++) {   
-    //     if (clickMouseX>=pointFirstFloorStart[k]['x мяча']&&clickMouseX<=(pointFirstFloorStart[k]['x мяча']+(bollRadius*2))&&clickMouseY>=pointFirstFloorStart[k]['y мяча']&&clickMouseY<=(pointFirstFloorStart[k]['y мяча']+(bollRadius*2))){
-    //     step++//считаем клики по мячам в ряду
-    //     context.clearRect(0,0,field.width,field.height)//перерисовываем
-    //     context.fillStyle='yellow';
-    //     context.fillRect(0,0,field.width,field.height);
-    //     var colorBoll = randomDiap(1,5)
-    //     context.fillStyle =bollColors[colorBoll]//это главный мячик
-    //     colorHeadStep[step] = bollColors[bollColorHead[0]]//сохраняем цвет последней смены шара
-    //     bollColorHead[0] = colorBoll//сохраняем полученный цвет 
-    //     context.beginPath()
-    //     context.arc(field.offsetWidth/2,(field.offsetHeight-bollRadius),bollRadius,0,Math.PI*2, false)
-    //     context.fill()
-    //     let bollCeo = 1; 
-    //     let bolleo = 0;        
-    //     for (let i = 1; i <=totalBolls; i++) {//нашла нужный по клику мяч и перерисовала его, пока просто для проверки
-    //         if (i===k) {
-    //             console.log(bollColors[lastHeadBoll],bollColors[bollColorsFlor[bollCeo]]);
-    //             if (bollColors[lastHeadBoll]===bollColors[bollColorsFlor[bollCeo]]) {
-    //                 context.fillStyle= 'yellow'
-    //                 context.beginPath()
-    //                 context.arc((pointFirstFloor[i]['x мяча']+bollRadius),(pointFirstFloorStart[i]['y мяча']+bollRadius),bollRadius,0,Math.PI*2, false)
-    //                 context.fill()
-    //                 context.fillStyle = 'yellow'//по клику бросаем мячик к указанным координатам нминус один ряд. но нужно не минус 1 ряд, а минус последний ряд!!!!!! исправить
-    //                 context.beginPath()
-    //                 context.arc((pointFirstFloor[i]['x мяча']+bollRadius),(pointFirstFloorStart[i]['y мяча']+bollRadius*3),bollRadius,0,Math.PI*2, false)
-    //                 context.fill()
-    //                 console.log(bollColorsFlor[k]=6);//после этого новый мяч снизу стал желтым
-    //                 // lastHeadBoll = bollColorHead[0] 
-
-    //             } else {
-    //                 if(bollColors[bollColorsFlor[bollCeo]]!=='yellow'){
-    //             context.fillStyle = bollColors[bollColorsFlor[bollCeo]]
-    //             context.beginPath()
-    //             context.arc((pointFirstFloor[i]['x мяча']+bollRadius),(pointFirstFloorStart[i]['y мяча']+bollRadius),bollRadius,0,Math.PI*2, false)
-    //             context.fill()
-    //             context.fillStyle =colorHeadStep[step]//по клику бросаем мячик к указанным координатам нминус один ряд. но нужно не минус 1 ряд, а минус последний ряд!!!!!! исправить
-    //             context.beginPath()
-    //             context.arc((pointFirstFloor[i]['x мяча']+bollRadius),(pointFirstFloorStart[i]['y мяча']+bollRadius*3),bollRadius,0,Math.PI*2, false)
-    //             context.fill()
-    //             } else {
-    //                 context.fillStyle =colorHeadStep[step]//по клику бросаем мячик к указанным координатам нминус один ряд. но нужно не минус 1 ряд, а минус последний ряд!!!!!! исправить
-    //                 context.beginPath()
-    //                 context.arc((pointFirstFloor[i]['x мяча']+bollRadius),(pointFirstFloorStart[i]['y мяча']+bollRadius),bollRadius,0,Math.PI*2, false)
-    //                 context.fill()
-    //             }
-    //         }
-    //             bolleo+=bollRadius*2
-    //             bollCeo++  
-    //         } else {
-    //         context.fillStyle = bollColors[bollColorsFlor[bollCeo]]
-    //         context.beginPath()
-    //         context.arc((pointFirstFloorStart[i]['x мяча']+bollRadius),(pointFirstFloorStart[i]['y мяча']+bollRadius),bollRadius,0,Math.PI*2, false)
-    //         context.fill()
-    //         bolleo+=bollRadius*2
-    //         bollCeo++ 
-    //         }
-    //         }   
-    //     } 
-    // }
-
-    // }  
-    
-
-    function tick() {
-
-        // let bollC = 1; 
-        context.clearRect(0,0,field.width,field.height)
-        context.fillStyle='yellow';
-        context.fillRect(0,0,field.width,field.height);
-        var boll = 0
-
-        context.fillStyle =bollColors[bollColorHead[0]]//это главный мячик
-        context.beginPath()
-        context.arc(field.offsetWidth/2,(field.offsetHeight-bollRadius),bollRadius,0,Math.PI*2, false)
-        context.fill()  
-
-
-        var changeStep  = bollRadius*2
-        // {for (let i = 0; i <= totalBolls; i++) {//строим первый ряд шариков
-
-        //     context.fillStyle = bollColors[bollColorsFlor[bollC]]
-        //     context.beginPath()
-        //     context.arc((field.offsetLeft+bollRadius-40+boll),(field.offsetTop+bollRadius-40+oneTick),bollRadius,0,Math.PI*2, false)
-        //     context.fill()
-        //     pointFirstFloorStart[bollC] = 
-        //     {'x мяча':(field.offsetLeft+bollRadius-40+boll-bollRadius),
-        //     'y мяча':(field.offsetTop+bollRadius-40+oneTick-bollRadius),
-        //     }   
-
-        //     boll+=bollRadius*2
-        //     bollC++
-        //     }
-
-        //     oneTick = oneTick+bollRadius*2
-
-        // if (oneTick>=field.height-bollRadius*2) {
-        //     oneTick = field.height-(bollRadius*2)*2
-
-        //     context.fillStyle='black';
-        //     context.font=`italic bold 20px Arial` 
-        //     context.textAlign='center';         
-        //     context.fillText('Вы проиграли!',field.width/2,field.height/2);
-        //     // colorHeadStep = {} в конце игры - очищать
-        // }}
-
-        for (let i = 1; i <=totalBolls; i++) {
-            var k = 0
-            pointFirstFloorStart[i] = {}
-            var pointFloor = []
-            var x= 0
-            var y = 0
-            var b = 1
-            for (let k= 9; k >= 0; k--) {
-                context.fillStyle=bollColorsFlor[i][i][k]//разворачиваю присваивание цветов
-                context.beginPath()
-                context.arc((field.offsetLeft+bollRadius+boll),(bollRadius*b+oneTick-(field.offsetHeight-bollRadius*2)),bollRadius,0,Math.PI*2, false)
-                context.fill()    
-                x = field.offsetLeft+bollRadius+boll
-                y = bollRadius*b+oneTick-(field.offsetHeight-bollRadius*2)
-                pointFloor.unshift({'x мяча':x,'y мяча':y})
-                b = b+2
             }
-            pointFirstFloorStart[i] = {[i]:pointFloor}
-            boll+=bollRadius*2
-            }
-            oneTick = oneTick+20
-            lastHeadBoll = bollColorHead[0]   
-      
-        
-            if (oneTick>=field.height-bollRadius*2) {
-            oneTick = field.height-(bollRadius*2)*2            
+
+            var countYellowBolls = 0
+            for (let bollY = 1; bollY <= totalFloors; bollY++) {
+                for (let bollX = 1; bollX <= totalBolls; bollX++) {
+                    if (colorsBolls[bollY][bollX] === bollColors[6]) {
+                        countYellowBolls++
+                    }
+                }
+            }  
+            if (countYellowBolls===(totalBolls*totalFloors)) {
             context.fillStyle='black';
             context.font=`italic bold 20px Arial` 
             context.textAlign='center';         
-            context.fillText('Вы проиграли!',field.width/2,field.height/2);
-            // colorHeadStep = {} в конце игры - очищать
+            context.fillText('Вы выиграли!',field.width/2,field.height/2);
+            }
+
+
+
+//отрисовка для ховер  - но не меняется, если мышь остановилась
+            for (let bollY = 1; bollY <= totalFloors; bollY++) {
+                for (let bollX = 1; bollX <= totalBolls; bollX++) {
+                    if (pointBolls[bollY][bollX]['x мяча']===line[0]&&pointBolls[bollY][bollX]['y мяча']===line[1]) {
+                        colorHover=colorsBolls[bollY][bollX]
+                        }
+                    }
+                }
             
-        }
-    }
+            context.strokeStyle = colorHover
+            context.lineWidth=3;
+            context.beginPath();
+            context.moveTo(field.offsetWidth/2,field.offsetHeight-bollRadius*2);
+            context.lineTo(line[0],line[1]);
+            context.stroke();
 
-    
 
-    
+                
 
+                //ищу нижний желтый ряд и отсекаю его из счета, но он убирает этот ряд, только если последний ряд убрал
+                // var yellowFlors = totalFloors
+                // var yellowFlorsBolls = 0
+                // for (let bollX=1; bollX<=totalBolls; bollX++) {
+                //     if (colorsBolls[bollX][yellowFlors]===bollColors[6]) {
+                //         yellowFlorsBolls++
+                //     }  
+                // }                    
+                // if (yellowFlorsBolls===totalBolls) {
+                //     yellowFlors--
+                // }                
+                
 
-    
+}
