@@ -333,7 +333,6 @@ function fieldCreate () {
 
 var stepDown = 0//скорость движения игры
 function getStart() {
-    window.navigator.vibrate(300);
     createPointColor()//что-то удаляет сразу??
     field.addEventListener('click',findColor,false)
 
@@ -344,8 +343,6 @@ function getStart() {
 } 
 
 function findVibro(eo) {
-     window.navigator.vibrate(300)
-    eo = eo||window.event
     var eoX = eo.pageX;
     var eoY =eo.pageY;
     for (let bollY= 1; bollY <= totalFloors; bollY++) {
@@ -353,6 +350,7 @@ function findVibro(eo) {
             if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
                 if (colorsBolls[bollY][bollX]===stopColor) {
                     window.navigator.vibrate(300)
+                    alert(eo.pageX)
                  }
             }
         }
