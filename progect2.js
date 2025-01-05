@@ -344,6 +344,7 @@ function getStart() {
 } 
 
 function findVibro(eo) {
+     window.navigator.vibrate(300)
     eo = eo||window.event
     var eoX = eo.pageX;
     var eoY =eo.pageY;
