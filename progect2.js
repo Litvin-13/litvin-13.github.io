@@ -333,6 +333,7 @@ function fieldCreate () {
 
 var stepDown = 0//скорость движения игры
 function getStart() {
+    window.navigator.vibrate(1000);
     createPointColor()//что-то удаляет сразу??
     field.addEventListener('click',findColor,false)
 
