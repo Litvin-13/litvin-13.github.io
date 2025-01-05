@@ -349,6 +349,7 @@ function findVibro(eo) {
         var eoY =eo.changedTouches[t].pageY;
         for (let bollY= 1; bollY <= totalFloors; bollY++) {
             for (let bollX = 1; bollX <= totalBolls; bollX++) {
+                alert(`по Х ${eoX}, по Y ${eoY},${pointBolls[bollY][bollX]}`)
                 if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
                     if (colorsBolls[bollY][bollX]===stopColor) {
                         window.navigator.vibrate(200)
