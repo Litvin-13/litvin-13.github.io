@@ -347,7 +347,6 @@ function findVibro(eo) {
     for ( let t=0; t<eo.changedTouches.length; t++ ) {
         var eoX = eo.changedTouches[t].pageX;
         var eoY =eo.changedTouches[t].pageY;
-        alert(eoX,eoY)
         for (let bollY= 1; bollY <= totalFloors; bollY++) {
             for (let bollX = 1; bollX <= totalBolls; bollX++) {
                 if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
