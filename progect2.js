@@ -2,11 +2,126 @@
 
 document.body.style.margin = 0
 
+var newGamer = 'Кристина'
+// function createNewGamer() {
+//     // newGamer = prompt('Ваше имя?')
+//     newGamer = 'Кристина'
+// }
 
 //счетчик игры
 var countTable= document.getElementsByClassName('forCount')[0]
 var counter = 0 
 countTable.innerHTML = `Ваш счет:${counter}`
+
+const ajaxHandlerScript="https://fe.it-academy.by/AjaxStringStorage2.php";
+let records;
+let updatePassword;
+const stringName='LITVIN_BUBBLEBOLL_RECORDS';
+
+function sendRecords() {//в конце игры сохраняет рекорды
+    updatePassword=Math.random();
+    $.ajax( {
+            url : ajaxHandlerScript,
+            type : 'POST', dataType:'json',
+            data : { f : 'LOCKGET', n : stringName,
+                p : updatePassword },
+            cache : false,
+            success : lockGetReady,
+            error : errorHandler
+        }
+    );
+}
+             
+function lockGetReady(callresult) {
+    if ( callresult.error!=undefined )
+        alert(callresult.error);
+    else {
+        records=[];
+        if ( callresult.result!="" ) { 
+            records=JSON.parse(callresult.result);
+            if ( !Array.isArray(records) )
+                records=[];
+        }
+
+        // for ( let r=0; r<records.length; r++ ) {
+        //     if (counter!==records[r].record) {
+        //         records.push( {name:newGamer,record:counter} );//нужна проверка на рекорды          
+        //     } 
+        // } добавить проверку на одинаковые рекорды!!!
+        records.push( {name:newGamer,record:counter} );//нужна проверка на рекорды          
+        records.sort( (a,b) => b.record-a.record );
+        if (records.length>5) {
+        records = records.slice(0,5)
+        }
+        console.log(records);
+                // records=[];//очистить хранилище
+        $.ajax( {
+                url : ajaxHandlerScript,
+                type : 'POST', dataType:'json',
+                data : { f : 'UPDATE', n : stringName,
+                    v : JSON.stringify(records), p : updatePassword },
+                cache : false,
+                success : updateReady,
+                error : errorHandler
+            }
+        );
+    }
+}
+
+function updateReady(callresult) {
+    if ( callresult.error!=undefined )
+        alert(callresult.error);
+}
+
+function getRecords() {
+    $.ajax( {
+            url : ajaxHandlerScript,
+            type : 'POST', dataType:'json',
+            data : { f : 'READ', n : stringName },
+            cache : false,
+            success : readReady,
+            error : errorHandler
+        }
+    );
+}
+
+function readReady(callresult) {
+    if ( callresult.error!=undefined )
+        alert(callresult.error);
+    else {
+        records=[];
+        if ( callresult.result!="" ) {
+            records=JSON.parse(callresult.result);
+            if ( !Array.isArray(records) )
+                records=[];            
+        }
+    let str='';
+    for ( let r=0; r<records.length; r++ ) {
+        // str+="<b>"+escapeHTML(recordsAll.name)+":</b> "
+        //     +escapeHTML(recordsAll.result)+"<br/>";
+        str+=escapeHTML(records[r].name)+": "+ records[r].record+"; "
+    }
+alert(str)
+  }
+}
+
+function escapeHTML(text) {
+    if ( !text )
+        return text;
+    text=text.toString()
+        .split("&").join("&amp;")
+        .split("<").join("&lt;")
+        .split(">").join("&gt;")
+        .split('"').join("&quot;")
+        .split("'").join("&#039;");
+    return text;
+}
+
+function errorHandler(jqXHR,statusStr,errorStr) {
+    alert(statusStr+' '+errorStr);
+}
+
+
 
 //игровое поле
 var field=document.getElementById('Table');
@@ -14,7 +129,7 @@ var context=field.getContext('2d');
 field.height = document.getElementById('Table1').offsetHeight*0.9
 field.width = document.getElementById('Table1').offsetWidth*0.99
 var totalBolls = 14//выбирать только четное количество шаров, важно для fieldCreate ()
-var totalFloors = 10
+var totalFloors = 15
 var bollRadius = field.offsetWidth/totalBolls/2
 
 //получение случайного цвета
@@ -52,7 +167,7 @@ var stopColor = ''
 function createPointColor(){
 //обнуление всех сохранений для начала игры
 counter = 0 
-stepDown=0.5  
+stepDown=0.3  
 pointBolls = {}
 colorsBolls = {}
 pointColorBolls = {}//можно будет убрать
@@ -92,12 +207,13 @@ function findColor(eo) {
     var eoX = eo.pageX;
     var eoY =eo.pageY;
     X=0
+    move=0
     for (let bollY= 1; bollY <= totalFloors; bollY++) {
         for (let bollX = 1; bollX <= totalBolls; bollX++) {
             if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
                 if (bollX>totalBolls/2) {
                     ctg = (pointBolls[bollY][bollX]['x мяча']-field.offsetWidth/2)/(field.height-bollRadius-pointBolls[bollY][bollX]['y мяча'])                    
-                } else if (bollX<totalBolls/2){
+                } else if (bollX<=totalBolls/2){
                     ctg = (field.offsetWidth/2-pointBolls[bollY][bollX]['x мяча'])/(field.height-bollRadius-pointBolls[bollY][bollX]['y мяча'])
                 }
                 stopBollX = bollX
@@ -109,25 +225,38 @@ function findColor(eo) {
     headBollColor=bollColors[randomDiap(1,5)]
 }
 
+var move = 0//для сохранения colorsBolls[stopBollY][stopBollX]!==stopColor в конце функции//здесь нужна еще проверка!!  так как заходит по второму кругу на colorsBolls[stopBollY][stopBollX]===stopColor  и делает шар желтым!!
 function changeColor() {
-    if (colorsBolls[stopBollY][stopBollX]===stopColor) {//здесь нужна еще проверка!!  так как заходит по второму кругу на colorsBolls[stopBollY][stopBollX]===stopColor  и делает шар желтым!!
+    if (colorsBolls[stopBollY][stopBollX]===stopColor&&move===0) {
         colorsBolls[stopBollY][stopBollX]=bollColors[6]  
-        counter++                      
-    // тут начинается ошибка !!!
+        counter++   
+    // // тут начинается ошибка !!!
+    // if (stopBollY>1) {
+    //     while (colorsBolls[stopBollY-iY][stopBollX]===stopColor) {
+    //         colorsBolls[stopBollY-iY][stopBollX]=bollColors[6]
+    //         iY++ 
+    //         counter++                      
+    //     }
+    // }
+    // if (stopBollY<totalFloors) {
+    // while (colorsBolls[stopBollY+iY][stopBollX]===stopColor) {
+    //     colorsBolls[stopBollY+iY][stopBollX]=bollColors[6]
+    //     iY++ 
+    //     counter++                      
+    // } }
+
     var iY = 1//убираем одинаковые шары по Y
-    if (stopBollY>1) {
-        while (colorsBolls[stopBollY-iY][stopBollX]===stopColor) {
-            colorsBolls[stopBollY-iY][stopBollX]=bollColors[6]
-            iY++ 
-            counter++                      
-        }
+    while ((stopBollY-iY)>=1&&colorsBolls[stopBollY-iY][stopBollX]===stopColor) {
+        colorsBolls[stopBollY-iY][stopBollX]=bollColors[6]
+        iY++ 
+        counter++                                  
     }
-    if (stopBollY<totalFloors) {
-    while (colorsBolls[stopBollY+iY][stopBollX]===stopColor) {
+    while ((stopBollY+iY)<=totalFloors&&colorsBolls[stopBollY+iY][stopBollX]===stopColor) {
         colorsBolls[stopBollY+iY][stopBollX]=bollColors[6]
         iY++ 
         counter++                      
-    } }
+    }    
+ 
     //убираем одинаковые шары по X 
     var iX = 1
     while (colorsBolls[stopBollY][stopBollX-iX]===stopColor) {
@@ -140,8 +269,9 @@ function changeColor() {
         iX ++
         counter++                      
     }
-    }else {
-    colorsBolls[stopBollY][stopBollX]=stopColor
+    } else  if (colorsBolls[stopBollY][stopBollX]!==stopColor) {
+        colorsBolls[stopBollY][stopBollX]=stopColor
+        move=1
     }
 }
 
@@ -187,20 +317,21 @@ function fieldCreate () {
     context.beginPath()
     context.arc(field.offsetWidth/2,(field.offsetHeight-bollRadius),bollRadius,0,Math.PI*2, false)
     context.fill() 
-
-                if (stopBollX>totalBolls/2) {
+                if (ctg!==0) {
+                    if (stopBollX>totalBolls/2) {
                     context.fillStyle = stopColor
                     context.beginPath()
                     context.arc((field.offsetWidth/2+X),((field.offsetHeight-bollRadius) -((field.offsetWidth/2+X)-field.offsetWidth/2)/ctg),bollRadius,0,Math.PI*2, false)//это расчет, если клик по Х после главного мяча
                     context.fill() 
                 
                 } else if (stopBollX<=totalBolls/2){
-    
                     context.fillStyle = stopColor
                     context.beginPath()
                     context.arc((field.offsetWidth/2-X),((field.offsetHeight-bollRadius) -(field.offsetWidth/2-(field.offsetWidth/2-X))/ctg),bollRadius,0,Math.PI*2, false)//это расчет, если клик по Х после главного мяча
                     context.fill() 
+                }  
                 } 
+
 }
 
 
@@ -209,50 +340,54 @@ var stepDown = 0//скорость движения игры
 function getStart() {
     createPointColor()//что-то удаляет сразу??
     field.addEventListener('click',findColor,false)
+
+    field.addEventListener('touchstart',findColor,false)//тач событие
+
+
     field.addEventListener('mousemove',mouseOverMove,false)//вмето ховера
 } 
 
 
 setInterval(tick,40);
 function tick() { 
-    if (stepDown>=0.5) {
-        stepDown+=0.5 
+    if (stepDown>=0.3) {
+        stepDown+=0.3 
 
     } else if(stepDown===field.offsetHeight-bollRadius*2){
         stepDown=0  
 
     }
     countTable.innerHTML = `Ваш счет:${counter}`
-    if (stopBollX!==0&&stopBollY!==0) {//написать боле логично!!!!!!!! 
-        if (colorsBolls[stopBollY][stopBollX]===bollColors[6]) {
-            X=0 
-        } else if (stopBollX>totalBolls/2){
-            if ((field.offsetWidth/2+X)<pointBolls[stopBollY][stopBollX]['x мяча']) {
-                if(ctg>0,3){
-                    X=X+30//скорость летящего главного шара 
-                }else{
-                    X=X+10//скорость летящего главного шара 
-                }
-            }  
-            else if((field.offsetWidth/2+X)>=pointBolls[stopBollY][stopBollX]['x мяча']) {   
-                X=0
-                ctg = 0 
-                changeColor()
-            }      
-        } else  if (stopBollX<=totalBolls/2){//плохо летит, если stopBollX=totalBolls/2!!!!!!!! 
-                 if ((field.offsetWidth/2-X)>pointBolls[stopBollY][stopBollX]['x мяча']) {
-                    if(ctg>0,3){
-                        X=X+30//скорость летящего главного шара 
+
+
+    if (stopBollX!==0&&stopBollY!==0&&colorsBolls[stopBollY][stopBollX]!==bollColors[6]) {//написать боле логично!!!!!!!! 
+            if (stopBollX>totalBolls/2){
+                if ((field.offsetWidth/2+X)<pointBolls[stopBollY][stopBollX]['x мяча']) {
+                    if(ctg>0.3){
+                        X=X+50 
                     }else{
-                        X=X+10//скорость летящего главного шара 
+                        X=X+20
                     }
-             }  
-             else if((field.offsetWidth/2-X)<=pointBolls[stopBollY][stopBollX]['x мяча']) {   
-                 X=0
-                 ctg = 0 
-                 changeColor()
-             }   
-        } 
+                }  
+                else if((field.offsetWidth/2+X)>=pointBolls[stopBollY][stopBollX]['x мяча']) {   
+                    X=0
+                    ctg = 0 
+                    changeColor()
+                }      
+            } else  if (stopBollX<=totalBolls/2){
+                     if ((field.offsetWidth/2-X)>pointBolls[stopBollY][stopBollX]['x мяча']) {
+                        if(ctg>0.3){
+                            X=X+50
+                        }else{
+                            X=X+10
+                        }
+                 }  
+                    else if((field.offsetWidth/2-X)<=pointBolls[stopBollY][stopBollX]['x мяча']) {   
+                     X=0
+                     ctg = 0 
+                     changeColor()
+                 }   
+            }   
     }
    
 
@@ -265,8 +400,11 @@ fieldCreate ()
                 context.textAlign='center';         
                 context.fillText('Вы проиграли!',field.width/2,field.height/2);
                 field.removeEventListener('click',findColor,false)
-                field.removeEventListener('mousemove',mouseOverMove,false)//вмето ховера
-
+                field.removeEventListener('mousemove',mouseOverMove,false)//вмето ховера 
+                // if (stepDown===field.offsetHeight-bollRadius*2) {
+                //     sendRecords()
+                //     stepDown+=0.0001
+                // }  
             }
 
             var countYellowBolls = 0
@@ -319,3 +457,8 @@ fieldCreate ()
                 
 
 }
+
+
+
+
+
