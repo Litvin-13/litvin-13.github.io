@@ -341,7 +341,7 @@ function getStart() {
     createPointColor()//что-то удаляет сразу??
     field.addEventListener('click',findColor,false)
 
-    field.addEventListener('touchstart',findColor,false)//тач событие
+    //field.addEventListener('touchstart',findColor,false)//тач событие
 
 
     field.addEventListener('mousemove',mouseOverMove,false)//вмето ховера
