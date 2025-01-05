@@ -351,9 +351,7 @@ function findVibro(eo) {
             for (let bollX = 1; bollX <= totalBolls; bollX++) {
                 alert(`по Х ${eoX}, по Y ${eoY},${pointBolls[bollY][bollX]['x мяча']},${pointBolls[bollY][bollX]['y мяча']}`)
                 if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
-                    if (colorsBolls[bollY][bollX]===stopColor) {
-                        window.navigator.vibrate(200)
-                     }
+                    window.navigator.vibrate(200)
                 }
             }
         }   
