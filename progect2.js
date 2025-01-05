@@ -1,13 +1,18 @@
 'use strict'
 
 document.body.style.margin = 0
-var sharik = document.getElementsByTagName('audio')[0]
 
 var newGamer = 'Кристина'
 // function createNewGamer() {
 //     // newGamer = prompt('Ваше имя?')
 //     newGamer = 'Кристина'
 // }
+
+var sharik = document.getElementsByTagName('audio')[0]
+
+// console.log(window.navigator.vibrate(200));
+
+
 
 //счетчик игры
 var countTable= document.getElementsByClassName('forCount')[0]
@@ -232,43 +237,32 @@ function changeColor() {
         colorsBolls[stopBollY][stopBollX]=bollColors[6]  
         counter++   
     // // тут начинается ошибка !!!
-    // if (stopBollY>1) {
-    //     while (colorsBolls[stopBollY-iY][stopBollX]===stopColor) {
-    //         colorsBolls[stopBollY-iY][stopBollX]=bollColors[6]
-    //         iY++ 
-    //         counter++                      
-    //     }
-    // }
-    // if (stopBollY<totalFloors) {
-    // while (colorsBolls[stopBollY+iY][stopBollX]===stopColor) {
-    //     colorsBolls[stopBollY+iY][stopBollX]=bollColors[6]
-    //     iY++ 
-    //     counter++                      
-    // } }
 
-    var iY = 1//убираем одинаковые шары по Y
-    while ((stopBollY-iY)>=1&&colorsBolls[stopBollY-iY][stopBollX]===stopColor) {
-        colorsBolls[stopBollY-iY][stopBollX]=bollColors[6]
-        iY++ 
-        counter++                                  
+    var iYTop = 1//убираем одинаковые шары по Y
+    while ((stopBollY-iYTop)>=1&&colorsBolls[stopBollY-iYTop][stopBollX]===stopColor) {
+        colorsBolls[stopBollY-iYTop][stopBollX]=bollColors[6]
+        iYTop++ 
+        counter++      
     }
-    while ((stopBollY+iY)<=totalFloors&&colorsBolls[stopBollY+iY][stopBollX]===stopColor) {
-        colorsBolls[stopBollY+iY][stopBollX]=bollColors[6]
-        iY++ 
+    var iYButtom = 1//убираем одинаковые шары по Y
+    while ((stopBollY+iYButtom)<=totalFloors&&colorsBolls[stopBollY+iYButtom][stopBollX]===stopColor) {
+        colorsBolls[stopBollY+iYButtom][stopBollX]=bollColors[6]
+        iYButtom++ 
         counter++                      
     }    
  
     //убираем одинаковые шары по X 
-    var iX = 1
-    while (colorsBolls[stopBollY][stopBollX-iX]===stopColor) {
-        colorsBolls[stopBollY][stopBollX-iX] =bollColors[6]
-        iX ++
-        counter++                      
+    var iXLeft = 1
+    var iXRight = 1
+    while (colorsBolls[stopBollY][stopBollX-iXLeft]===stopColor) {
+        colorsBolls[stopBollY][stopBollX-iXLeft] =bollColors[6]
+        iXLeft ++
+        counter++ 
     }  
-    while (colorsBolls[stopBollY][stopBollX+iX]===stopColor) {
-        colorsBolls[stopBollY][stopBollX+iX] =bollColors[6]
-        iX ++
-        counter++                      
+    while (colorsBolls[stopBollY][stopBollX+iXRight]===stopColor) {
+        colorsBolls[stopBollY][stopBollX+iXRight] =bollColors[6]
+        iXRight ++
+        counter++ 
     }
     } else  if (colorsBolls[stopBollY][stopBollX]!==stopColor) {
         colorsBolls[stopBollY][stopBollX]=stopColor
@@ -342,11 +336,26 @@ function getStart() {
     createPointColor()//что-то удаляет сразу??
     field.addEventListener('click',findColor,false)
 
-    //field.addEventListener('touchstart',findColor,false)//тач событие
-
+    field.addEventListener('touchstart',findVibro,false)//тач событие
+    // field.addEventListener('click',findVibro,false)//тач событие
 
     field.addEventListener('mousemove',mouseOverMove,false)//вмето ховера
 } 
+
+function findVibro(eo) {
+    eo = eo||window.event
+    var eoX = eo.pageX;
+    var eoY =eo.pageY;
+    for (let bollY= 1; bollY <= totalFloors; bollY++) {
+        for (let bollX = 1; bollX <= totalBolls; bollX++) {
+            if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
+                if (colorsBolls[bollY][bollX]===stopColor) {
+                   navigator.vibrate(30)
+                 }
+            }
+        }
+    }   
+}
 
 
 setInterval(tick,40);
@@ -361,7 +370,7 @@ function tick() {
     countTable.innerHTML = `Ваш счет:${counter}`
 
 
-    if (stopBollX!==0&&stopBollY!==0&&colorsBolls[stopBollY][stopBollX]!==bollColors[6]) {//написать боле логично!!!!!!!! 
+    if (stopBollX!==0&&stopBollY!==0&&colorsBolls[stopBollY][stopBollX]!==bollColors[6]&&move!==1) {//написать боле логично!!!!!!!! move!==1-чтобы звук не включаля повторно
             if (stopBollX>totalBolls/2){
                 if ((field.offsetWidth/2+X)<pointBolls[stopBollY][stopBollX]['x мяча']) {
                     if(ctg>0.3){
@@ -371,9 +380,9 @@ function tick() {
                     }
                 }  
                 else if((field.offsetWidth/2+X)>=pointBolls[stopBollY][stopBollX]['x мяча']) {   
+                    sharik.play()                               
                     X=0
                     ctg = 0 
-                     sharik.play()                               
                     changeColor()
                 }      
             } else  if (stopBollX<=totalBolls/2){
@@ -384,10 +393,10 @@ function tick() {
                             X=X+10
                         }
                  }  
-                    else if((field.offsetWidth/2-X)<=pointBolls[stopBollY][stopBollX]['x мяча']) {   
+                    else if((field.offsetWidth/2-X)<=pointBolls[stopBollY][stopBollX]['x мяча']) {
+                    sharik.play()                               
                      X=0
                      ctg = 0 
-                     sharik.play()                               
                      changeColor()
                  }   
             }   
