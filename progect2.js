@@ -345,13 +345,13 @@ function getStart() {
 function findVibro(eo) {
     var eoX = eo.pageX;
     var eoY =eo.pageY;
+    alert(eoX,eoY)
+    window.navigator.vibrate(300)
     for (let bollY= 1; bollY <= totalFloors; bollY++) {
         for (let bollX = 1; bollX <= totalBolls; bollX++) {
             if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
-                if (colorsBolls[bollY][bollX]===stopColor) {
                     window.navigator.vibrate(300)
                     alert(eo.pageX)
-                 }
             }
         }
     }   
