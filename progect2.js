@@ -1,6 +1,7 @@
 'use strict'
 
 document.body.style.margin = 0
+var sharik = document.getElementsByTagName('audio')[0]
 
 var newGamer = 'Кристина'
 // function createNewGamer() {
@@ -372,6 +373,7 @@ function tick() {
                 else if((field.offsetWidth/2+X)>=pointBolls[stopBollY][stopBollX]['x мяча']) {   
                     X=0
                     ctg = 0 
+                     sharik.play()                               
                     changeColor()
                 }      
             } else  if (stopBollX<=totalBolls/2){
@@ -385,6 +387,7 @@ function tick() {
                     else if((field.offsetWidth/2-X)<=pointBolls[stopBollY][stopBollX]['x мяча']) {   
                      X=0
                      ctg = 0 
+                     sharik.play()                               
                      changeColor()
                  }   
             }   
