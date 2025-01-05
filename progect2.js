@@ -134,8 +134,8 @@ var field=document.getElementById('Table');
 var context=field.getContext('2d');
 field.height = document.getElementById('Table1').offsetHeight*0.9
 field.width = document.getElementById('Table1').offsetWidth*0.99
-var totalBolls = 14//выбирать только четное количество шаров, важно для fieldCreate ()
-var totalFloors = 15
+var totalBolls = 8//выбирать только четное количество шаров, важно для fieldCreate ()
+var totalFloors = 5
 var bollRadius = field.offsetWidth/totalBolls/2
 
 //получение случайного цвета
@@ -349,8 +349,9 @@ function findVibro(eo) {
         var eoY =eo.changedTouches[t].pageY;
         for (let bollY= 1; bollY <= totalFloors; bollY++) {
             for (let bollX = 1; bollX <= totalBolls; bollX++) {
-                alert(`по Х ${eoX}, по Y ${eoY},${pointBolls[bollY][bollX]['x мяча']},${pointBolls[bollY][bollX]['y мяча']}`)
+                
                 if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
+                    alert(`по Х ${eoX}, по Y ${eoY},${pointBolls[bollY][bollX]['x мяча']},${pointBolls[bollY][bollX]['y мяча']}`)
                     window.navigator.vibrate(200)
                 }
             }
