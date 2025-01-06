@@ -4,7 +4,7 @@ document.body.style.margin = 0
 var newGamer = ''
 
 
-//var totalFloors = 0//доработать по уровням
+// var totalFloors = 0//доработать по уровням
 // var totalBolls = 0
 // var bollRadius = 0
 // function getLevel(a,b) {
@@ -34,8 +34,6 @@ var newGamer = ''
 //     } 
 // }
 
-
-
 //звук взрыва мячика
 var sharik = document.getElementsByTagName('audio')[0]
 //игровое поле
@@ -46,7 +44,6 @@ field.width = document.getElementById('Table1').offsetWidth*0.99
 var totalBolls = 14//выбирать только четное количество шаров, важно для fieldCreate ()
 var totalFloors = 10
 var bollRadius = field.offsetWidth/totalBolls/2
-createGamer()
 
 
 //получение случайного цвета 
@@ -108,6 +105,9 @@ function createGamer() {
     else 
     newGamer =JSON.parse(localStorage.getItem('игрок')) 
 }
+
+createGamer()
+
 
 function createNewGamer() {
     getStart()
@@ -467,6 +467,8 @@ function tick() {
     if (countYellowBolls===(totalBolls*totalFloors)) {
         gameOver('Вы выиграли!')
         yellowFlors=totalFloors
+        console.log(yellowFlors,totalFloors);
+        
      } else { if ((pointBolls[yellowFlors][totalBolls]['y мяча'])>field.offsetHeight-bollRadius*3) {
                 var countYellowBollsInFloor = 0
                 for (const key in colorsBolls[yellowFlors]) {
@@ -482,4 +484,8 @@ function tick() {
                         }
                 } 
             }    
+
+
 }
+
+
