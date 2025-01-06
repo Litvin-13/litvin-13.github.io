@@ -4,24 +4,33 @@ document.body.style.margin = 0
 var newGamer = ''
 
 
-// var totalFloors = 0//доработать по уровням
-// function getLevel(a) {
+//var totalFloors = 0//доработать по уровням
+// var totalBolls = 0
+// var bollRadius = 0
+// function getLevel(a,b) {
 //     totalFloors = a
+//     totalBolls = b
 // }
-// var level = document.getElementById('level')//сделать выбор уровнней
+// createPointColor()
+
+// var level = document.getElementById('level')//сделать выбор уровнней  - доработать все
 // level.addEventListener('focusout',changeGame,false)
 // function changeGame() {
 //     if (level[0].selected) {
 //         createPointColor()
-//         getLevel(10)
+//         getLevel(10,10)
+//         bollRadius = field.offsetWidth/totalBolls/2
 //         console.log(totalBolls);
 //     } else if (level[1].selected) {
 //         createPointColor()
-//         getLevel(14)
+//         getLevel(14,14)
+//         bollRadius = field.offsetWidth/totalBolls/2
+//         yellowFlors = totalFloors
 //         console.log(totalBolls);
 //     } else if (level[2].selected) {
 //         createPointColor()
-//         getLevel(20)
+//         getLevel(20,20)
+//         bollRadius = field.offsetWidth/totalBolls/2
 //     } 
 // }
 
