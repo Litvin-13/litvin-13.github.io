@@ -1,30 +1,123 @@
 'use strict'
-
 document.body.style.margin = 0
 
-var newGamer = 'Кристина'
-// function createNewGamer() {
-//     // newGamer = prompt('Ваше имя?')
-//     newGamer = 'Кристина'
+var newGamer = ''
+
+
+// var totalFloors = 0//доработать по уровням
+// function getLevel(a) {
+//     totalFloors = a
+// }
+// var level = document.getElementById('level')//сделать выбор уровнней
+// level.addEventListener('focusout',changeGame,false)
+// function changeGame() {
+//     if (level[0].selected) {
+//         createPointColor()
+//         getLevel(10)
+//         console.log(totalBolls);
+//     } else if (level[1].selected) {
+//         createPointColor()
+//         getLevel(14)
+//         console.log(totalBolls);
+//     } else if (level[2].selected) {
+//         createPointColor()
+//         getLevel(20)
+//     } 
 // }
 
+
+
+//звук взрыва мячика
 var sharik = document.getElementsByTagName('audio')[0]
+//игровое поле
+var field=document.getElementById('Table');
+var context=field.getContext('2d');
+field.height = document.getElementById('Table1').offsetHeight*0.9
+field.width = document.getElementById('Table1').offsetWidth*0.99
+var totalBolls = 14//выбирать только четное количество шаров, важно для fieldCreate ()
+var totalFloors = 10
+var bollRadius = field.offsetWidth/totalBolls/2
+createGamer()
 
-// console.log(window.navigator.vibrate(200));
 
-
-
+//получение случайного цвета 
+function randomDiap(n,m) {
+    return Math.floor(
+      Math.random()*(m-n+1)
+      )+n;
+}
+var bollColors = {
+    1:'green',
+    2:'grey',
+    3:'red',
+    4:'violet',
+    5:'black',
+    6:'yellow'
+}
+//координаты и цвета мячей
+var pointBolls = {}
+var colorsBolls = {}
+var pointColorBolls = {}//можно будет убрать
+//характерстики главного шара
+var headBollColor = ''
+var stopBollX = 0
+var stopBollY = 0
+var stopColor = ''
 //счетчик игры
 var countTable= document.getElementsByClassName('forCount')[0]
 var counter = 0 
-countTable.innerHTML = `Ваш счет:${counter}`
-
+//связь с сервером для хранения рекордов
 const ajaxHandlerScript="https://fe.it-academy.by/AjaxStringStorage2.php";
 let records;
 let updatePassword;
 const stringName='LITVIN_BUBBLEBOLL_RECORDS';
+//сохранение движения и цвета
+var X = 0
+var ctg = 0
+var line = []
+var colorHover = 0
 
-function sendRecords() {//в конце игры сохраняет рекорды
+//создаем нового игрока
+class Gamer {
+    constructor() {
+        this.gamer
+    }
+    createGamer(){
+        this.gamer = prompt('Ваше имя?')
+    }
+    saveGamer() {
+        localStorage.setItem('игрок',JSON.stringify(this.gamer))     
+    }
+}
+function createGamer() {
+    if (!localStorage.getItem('игрок')) {
+    var newItem = new Gamer()
+    newItem.createGamer()
+    newItem.saveGamer()
+    newGamer = newItem.gamer
+    } 
+    else 
+    newGamer =JSON.parse(localStorage.getItem('игрок')) 
+}
+
+function createNewGamer() {
+    getStart()
+    if (localStorage.getItem('игрок')) {
+        localStorage.clear('игрок')
+        createGamer() 
+    } else 
+        createGamer() 
+}
+
+//показываем правила
+function showRules() {
+    alert(
+        'Разноцветные шарики плавно опускаются снизу рядами. Внизу есть главный шар, который выбивает шары из появляющегося поля, если совпадает цвет. Как только нижний уровень достигне уровня главного шара - вы проиграли. Если успели выбить все шары - вы выиграли. Шарики можно выбивать только по горизонтали и вертикали от шара, по которому вы попали. Если попали в шар, который не соответсвует цвеиу главного шара - этот шар не исчезает, а меняет свой цвет, при этом шары по вертикали и горизонтали не выбиваются.'
+    )
+}
+
+//сохранение и вывод рекордов
+function sendRecords() {//в конце игры сохраняет рекорды?пока только по кнопке. 
     updatePassword=Math.random();
     $.ajax( {
             url : ajaxHandlerScript,
@@ -48,18 +141,11 @@ function lockGetReady(callresult) {
             if ( !Array.isArray(records) )
                 records=[];
         }
-
-        // for ( let r=0; r<records.length; r++ ) {
-        //     if (counter!==records[r].record) {
-        //         records.push( {name:newGamer,record:counter} );//нужна проверка на рекорды          
-        //     } 
-        // } добавить проверку на одинаковые рекорды!!!
-        records.push( {name:newGamer,record:counter} );//нужна проверка на рекорды          
+        records.push( {name:newGamer,record:counter} );        
         records.sort( (a,b) => b.record-a.record );
         if (records.length>5) {
         records = records.slice(0,5)
         }
-        console.log(records);
                 // records=[];//очистить хранилище
         $.ajax( {
                 url : ajaxHandlerScript,
@@ -70,7 +156,7 @@ function lockGetReady(callresult) {
                 success : updateReady,
                 error : errorHandler
             }
-        );
+        )
     }
 }
 
@@ -88,7 +174,7 @@ function getRecords() {
             success : readReady,
             error : errorHandler
         }
-    );
+    )
 }
 
 function readReady(callresult) {
@@ -103,9 +189,7 @@ function readReady(callresult) {
         }
     let str='';
     for ( let r=0; r<records.length; r++ ) {
-        // str+="<b>"+escapeHTML(recordsAll.name)+":</b> "
-        //     +escapeHTML(recordsAll.result)+"<br/>";
-        str+=escapeHTML(records[r].name)+": "+ records[r].record+"; "
+        str+=escapeHTML(records[r].name)+": "+ records[r].record+"; "//изменить способ выведения рекордов. Модальное окно?
     }
 alert(str)
   }
@@ -127,56 +211,12 @@ function errorHandler(jqXHR,statusStr,errorStr) {
     alert(statusStr+' '+errorStr);
 }
 
-
-
-//игровое поле
-var field=document.getElementById('Table');
-var context=field.getContext('2d');
-field.height = document.getElementById('Table1').offsetHeight*0.9
-field.width = document.getElementById('Table1').offsetWidth*0.99
-var totalBolls = 8//выбирать только четное количество шаров, важно для fieldCreate ()
-var totalFloors = 5
-var bollRadius = field.offsetWidth/totalBolls/2
-
-//получение случайного цвета
-function randomDiap(n,m) {
-    return Math.floor(
-      Math.random()*(m-n+1)
-      )+n;
-}
-var bollColors = {
-    1:'green',
-    2:'grey',
-    3:'red',
-    4:'violet',
-    5:'black',
-    6:'yellow'
-}
-
-
-//координаты и цвета мячей
-var pointBolls = {}
-var colorsBolls = {}
-var pointColorBolls = {}//можно будет убрать
-
-//характерстики главного шара. Потом обьединить в обьект или новый класс, переделать в обект главного мяча и добавть свойство - перересовка ховер в ТИК
-var headBollColor = ''
-var line = []
-var colorHover = 0
-
-var X = 0
-var ctg = 0
-var stopBollX = 0
-var stopBollY = 0
-var stopColor = ''
-
+//подбор цветов,координат и отрисовка поля
 function createPointColor(){
 //обнуление всех сохранений для начала игры
 counter = 0 
-stepDown=0.3  
 pointBolls = {}
 colorsBolls = {}
-pointColorBolls = {}//можно будет убрать
 headBollColor = ''
 line = []
 colorHover = 0
@@ -185,28 +225,25 @@ ctg = 0
 stopBollX = 0
 stopBollY = 0
 stopColor = ''
-
-
-    var b = 1
+var b = 1
     for (let bollY= 1; bollY <= totalFloors; bollY++) {
         var a = 1
         pointBolls[bollY] = {}
         colorsBolls[bollY] = {}
-        pointColorBolls[bollY] ={}
         for (let bollX = 1; bollX <= totalBolls; bollX++) {
             var colorBoll = bollColors[randomDiap(1,5)] 
             var x = field.offsetLeft+bollRadius*a
             var y = field.offsetTop+bollRadius*b
             pointBolls[bollY][bollX] = {'x мяча':x,'y мяча':y}
             colorsBolls[bollY][bollX]= colorBoll
-            pointColorBolls[bollY][bollX]= {[colorBoll]:{'x мяча':x,'y мяча':y}}
             a = a+2            
         }
         b = b+2
     }  
-        headBollColor = colorBoll//сохраняем полученный цвет главного шарика
+    headBollColor = colorBoll//сохраняем полученный цвет главного шарика
 }
 createPointColor()
+
 
 function findColor(eo) {
     eo = eo||window.event
@@ -231,13 +268,11 @@ function findColor(eo) {
     headBollColor=bollColors[randomDiap(1,5)]
 }
 
-var move = 0//для сохранения colorsBolls[stopBollY][stopBollX]!==stopColor в конце функции//здесь нужна еще проверка!!  так как заходит по второму кругу на colorsBolls[stopBollY][stopBollX]===stopColor  и делает шар желтым!!
+var move = 0//если цвета главного и выбитого шара не совпадают, то указывает, что выбитый шар уже изменил свой цвет (т.е. его не нужно опять сравнивнивать по цвету, выключае повторный звук взрыва)
 function changeColor() {
     if (colorsBolls[stopBollY][stopBollX]===stopColor&&move===0) {
         colorsBolls[stopBollY][stopBollX]=bollColors[6]  
         counter++   
-    // // тут начинается ошибка !!!
-
     var iYTop = 1//убираем одинаковые шары по Y
     while ((stopBollY-iYTop)>=1&&colorsBolls[stopBollY-iYTop][stopBollX]===stopColor) {
         colorsBolls[stopBollY-iYTop][stopBollX]=bollColors[6]
@@ -249,22 +284,20 @@ function changeColor() {
         colorsBolls[stopBollY+iYButtom][stopBollX]=bollColors[6]
         iYButtom++ 
         counter++                      
-    }    
- 
-    //убираем одинаковые шары по X 
-    var iXLeft = 1
-    var iXRight = 1
+    }        
+    var iXLeft = 1//убираем одинаковые шары по X
     while (colorsBolls[stopBollY][stopBollX-iXLeft]===stopColor) {
         colorsBolls[stopBollY][stopBollX-iXLeft] =bollColors[6]
         iXLeft ++
         counter++ 
     }  
+    var iXRight = 1
     while (colorsBolls[stopBollY][stopBollX+iXRight]===stopColor) {
         colorsBolls[stopBollY][stopBollX+iXRight] =bollColors[6]
         iXRight ++
         counter++ 
     }
-    } else  if (colorsBolls[stopBollY][stopBollX]!==stopColor) {
+    } else {
         colorsBolls[stopBollY][stopBollX]=stopColor
         move=1
     }
@@ -279,17 +312,12 @@ function mouseOverMove(eo) {
             if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {                      
             line = [pointBolls[bollY][bollX]['x мяча'],pointBolls[bollY][bollX]['y мяча']]
             colorHover = colorsBolls[bollY][bollX]
+            }
         }
-    }
     }  
-    if (eo.pageY-bollRadius>pointBolls[totalFloors][totalBolls]['y мяча']){
-        line = []
-    }
-
 }
 
-
-function fieldCreate () {
+function fieldCreate() {
     context.fillStyle='yellow';//поле
     context.fillRect(0,0,field.width,field.height);          
     var b = 1
@@ -307,49 +335,32 @@ function fieldCreate () {
         }
         b = b+2      
     }  
-
     context.fillStyle = headBollColor
     context.beginPath()
     context.arc(field.offsetWidth/2,(field.offsetHeight-bollRadius),bollRadius,0,Math.PI*2, false)
     context.fill() 
-                if (ctg!==0) {
-                    if (stopBollX>totalBolls/2) {
-                    context.fillStyle = stopColor
-                    context.beginPath()
-                    context.arc((field.offsetWidth/2+X),((field.offsetHeight-bollRadius) -((field.offsetWidth/2+X)-field.offsetWidth/2)/ctg),bollRadius,0,Math.PI*2, false)//это расчет, если клик по Х после главного мяча
-                    context.fill() 
-                
-                } else if (stopBollX<=totalBolls/2){
-                    context.fillStyle = stopColor
-                    context.beginPath()
-                    context.arc((field.offsetWidth/2-X),((field.offsetHeight-bollRadius) -(field.offsetWidth/2-(field.offsetWidth/2-X))/ctg),bollRadius,0,Math.PI*2, false)//это расчет, если клик по Х после главного мяча
-                    context.fill() 
-                }  
-                } 
+    
+    //отрисовка полета шарика к цели
+    if (stopBollX>totalBolls/2) {
+    context.fillStyle = stopColor
+    context.beginPath()
+    context.arc((field.offsetWidth/2+X),((field.offsetHeight-bollRadius) -((field.offsetWidth/2+X)-field.offsetWidth/2)/ctg),bollRadius,0,Math.PI*2, false)//это расчет, если клик по Х после главного мяча
+    context.fill() 
+    } else if (stopBollX<=totalBolls/2){
+    context.fillStyle = stopColor
+    context.beginPath()
+    context.arc((field.offsetWidth/2-X),((field.offsetHeight-bollRadius) -(field.offsetWidth/2-(field.offsetWidth/2-X))/ctg),bollRadius,0,Math.PI*2, false)//это расчет, если клик по Х после главного мяча
+    context.fill()   
+    } 
 
 }
 
-
-
-var stepDown = 0//скорость движения игры
-function getStart() {
-    createPointColor()//что-то удаляет сразу??
-    field.addEventListener('click',findColor,false)
-
-    field.addEventListener('touchstart',findVibro,false)//тач событие
-    // field.addEventListener('click',findVibro,false)//тач событие
-
-    field.addEventListener('mousemove',mouseOverMove,false)//вмето ховера
-} 
-
 function findVibro(eo) {
-
     for ( let t=0; t<eo.changedTouches.length; t++ ) {
         var eoX = eo.changedTouches[t].pageX;
         var eoY =eo.changedTouches[t].pageY;
         for (let bollY= 1; bollY <= totalFloors; bollY++) {
             for (let bollX = 1; bollX <= totalBolls; bollX++) {
-                
                 if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
                     if (colorsBolls[bollY][bollX]!==headBollColor) {
                         window.navigator.vibrate(200)
@@ -360,120 +371,106 @@ function findVibro(eo) {
     }
 }
 
+function getStart() {   
+    if (localStorage.getItem('игрок')) {
+        stepDown=0.3  
+        createPointColor()//что-то удаляет сразу??
+        field.addEventListener('click',findColor,false)
+        field.addEventListener('touchstart',findVibro,false)//тач событие
+        field.addEventListener('mousemove',mouseOverMove,false)
+        } 
+    else createGamer()
+} 
 
+function gameOver(result) {
+    context.fillStyle='black';
+    context.font=`italic bold 20px Arial` 
+    context.textAlign='center';         
+    context.fillText(result,field.width/2,field.height/2);
+    field.removeEventListener('click',findColor,false)
+    field.removeEventListener('mousemove',mouseOverMove,false)
+    field.removeEventListener('touchstart',findVibro,false)//тач событие 
+}
+//отрисовка для ховер
+function createLine() {
+    if (colorHover!==bollColors[6]) {
+        context.strokeStyle = colorHover
+        context.lineWidth=3;
+        context.beginPath();
+        context.moveTo(field.offsetWidth/2,field.offsetHeight-bollRadius*2);
+        context.lineTo(line[0],line[1]);
+        context.stroke();   
+    }
+}
+
+var yellowFlors = totalFloors
+var stepDown = 0//скорость движения игры
 setInterval(tick,40);
+
 function tick() { 
+    fieldCreate()
+    createLine()
     if (stepDown>=0.3) {
         stepDown+=0.3 
-
-    } else if(stepDown===field.offsetHeight-bollRadius*2){
-        stepDown=0  
-
-    }
+    } 
     countTable.innerHTML = `Ваш счет:${counter}`
 
-
+    //полет мячика
     if (stopBollX!==0&&stopBollY!==0&&colorsBolls[stopBollY][stopBollX]!==bollColors[6]&&move!==1) {//написать боле логично!!!!!!!! move!==1-чтобы звук не включаля повторно
-            if (stopBollX>totalBolls/2){
-                if ((field.offsetWidth/2+X)<pointBolls[stopBollY][stopBollX]['x мяча']) {
-                    if(ctg>0.3){
-                        X=X+50 
+        if (stopBollX>totalBolls/2){//шарик летит вправо
+            if ((field.offsetWidth/2+X)<pointBolls[stopBollY][stopBollX]['x мяча']) {
+                if(ctg>0.3){
+                    X=X+50 
                     }else{
-                        X=X+20
+                    X=X+20
                     }
-                }  
-                else if((field.offsetWidth/2+X)>=pointBolls[stopBollY][stopBollX]['x мяча']) {   
+            }  else if((field.offsetWidth/2+X)>=pointBolls[stopBollY][stopBollX]['x мяча']) {   
                     sharik.play()                               
                     X=0
                     ctg = 0 
                     changeColor()
-                }      
-            } else  if (stopBollX<=totalBolls/2){
-                     if ((field.offsetWidth/2-X)>pointBolls[stopBollY][stopBollX]['x мяча']) {
-                        if(ctg>0.3){
-                            X=X+50
-                        }else{
-                            X=X+10
-                        }
-                 }  
-                    else if((field.offsetWidth/2-X)<=pointBolls[stopBollY][stopBollX]['x мяча']) {
+            }      
+        } else  if (stopBollX<=totalBolls/2){//шарик летит влево
+                if ((field.offsetWidth/2-X)>pointBolls[stopBollY][stopBollX]['x мяча']) {
+                    if(ctg>0.3){
+                    X=X+50
+                    }else{
+                    X=X+20
+                    }
+            }  else if((field.offsetWidth/2-X)<=pointBolls[stopBollY][stopBollX]['x мяча']) {
                     sharik.play()                               
-                     X=0
-                     ctg = 0 
-                     changeColor()
-                 }   
+                    X=0
+                    ctg = 0 
+                    changeColor()
             }   
+        }   
     }
-   
-
-fieldCreate ()
-
-            if ((pointBolls[totalFloors][totalBolls]['y мяча'])>field.offsetHeight-bollRadius*4) {//осановка игры -пересмотреть остановку!!!
-                stepDown=field.offsetHeight-bollRadius*2
-                context.fillStyle='black';
-                context.font=`italic bold 20px Arial` 
-                context.textAlign='center';         
-                context.fillText('Вы проиграли!',field.width/2,field.height/2);
-                field.removeEventListener('click',findColor,false)
-                field.removeEventListener('mousemove',mouseOverMove,false)//вмето ховера 
-                // if (stepDown===field.offsetHeight-bollRadius*2) {
-                //     sendRecords()
-                //     stepDown+=0.0001
-                // }  
+    
+    //конец игры         
+    var countYellowBolls = 0
+    for (let bollY = 1; bollY <= totalFloors; bollY++) {
+        for (const key in colorsBolls[bollY]) {
+            if (colorsBolls[bollY][key]===bollColors[6]) {
+                countYellowBolls++
             }
-
-            var countYellowBolls = 0
-            for (let bollY = 1; bollY <= totalFloors; bollY++) {
-                for (let bollX = 1; bollX <= totalBolls; bollX++) {
-                    if (colorsBolls[bollY][bollX] === bollColors[6]) {
-                        countYellowBolls++
+        }
+    }  
+    if (countYellowBolls===(totalBolls*totalFloors)) {
+        gameOver('Вы выиграли!')
+        yellowFlors=totalFloors
+     } else { if ((pointBolls[yellowFlors][totalBolls]['y мяча'])>field.offsetHeight-bollRadius*3) {
+                var countYellowBollsInFloor = 0
+                for (const key in colorsBolls[yellowFlors]) {
+                    if (colorsBolls[yellowFlors][key]===bollColors[6]) {
+                        countYellowBollsInFloor++
                     }
                 }
-            }  
-            if (countYellowBolls===(totalBolls*totalFloors)) {
-            context.fillStyle='black';
-            context.font=`italic bold 20px Arial` 
-            context.textAlign='center';         
-            context.fillText('Вы выиграли!',field.width/2,field.height/2);
-            }
-
-
-
-//отрисовка для ховер  - но не меняется, если мышь остановилась
-            for (let bollY = 1; bollY <= totalFloors; bollY++) {
-                for (let bollX = 1; bollX <= totalBolls; bollX++) {
-                    if (pointBolls[bollY][bollX]['x мяча']===line[0]&&pointBolls[bollY][bollX]['y мяча']===line[1]) {
-                        colorHover=colorsBolls[bollY][bollX]
+                if (countYellowBollsInFloor===totalBolls) {
+                    yellowFlors--
+                } else if (countYellowBollsInFloor!==totalBolls){
+                        gameOver('Вы проиграли!')
+                        stepDown+=10
                         }
-                    }
-                }
-            
-            context.strokeStyle = colorHover
-            context.lineWidth=3;
-            context.beginPath();
-            context.moveTo(field.offsetWidth/2,field.offsetHeight-bollRadius*2);
-            context.lineTo(line[0],line[1]);
-            context.stroke();
-
-
-                
-
-                //ищу нижний желтый ряд и отсекаю его из счета, но он убирает этот ряд, только если последний ряд убрал
-                // var yellowFlors = totalFloors
-                // var yellowFlorsBolls = 0
-                // for (let bollX=1; bollX<=totalBolls; bollX++) {
-                //     if (colorsBolls[bollX][yellowFlors]===bollColors[6]) {
-                //         yellowFlorsBolls++
-                //     }  
-                // }                    
-                // if (yellowFlorsBolls===totalBolls) {
-                //     yellowFlors--
-                // }                
-                
-
+                } 
+            }    
 }
-
-
-
-
-
