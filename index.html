@@ -3,24 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BubbleBoll</title>
+    <title>BUBBLEBOLL</title>
+    <link rel="icon" href="data:;base64,="><!-- иконка для звука -->
+    <link rel="icon" href="balloons.png">
 </head>
 <body>
 
-    <div id="Table1" style="height:100vh;width:100wh;background-color: yellow;" >
+    <div id="Table1" style="height:99vh;width:100vw;background-color: yellow;" >
         <canvas id="Table">
             Обновите браузер
         </canvas>
         <div class="menu">
             <button type="button" onclick="getStart()">Новая игра</button>
-            <button type="button">Уровни</button>
-            <button type="button">Правила</button>
+            <select name="level" id="level">
+                <option value="level1">уровень 1</option>
+                <option value="level2" selected>уровень 2</option>
+                <option value="level3">уровень 3</option>
+            </select>
+            <button type="button" onclick="showRules()">Правила</button>
             <button type="button" onclick="createNewGamer()">Новый игрок</button>
             <button type="button" onclick="sendRecords()">Сохранить счет</button>
             <button type="button" onclick="getRecords()">Рекорды</button>
-            <audio src="sharik.mp3"></audio>
+
         </div>
         <div class="forCount"></div>
+        <audio src="sharik.mp3"></audio>
     </div>
     <script src="https://fe.it-academy.by/JQ/jquery.js"></script>
     <script src="progect2.js"></script>
