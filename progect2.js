@@ -19,6 +19,7 @@ var bollColors = {
 
 document.body.style.margin = 0
 document.body.style.fontFamily = 'monospace'
+document.body.style.fontSize = 2+'vh'
 //звук взрыва мячика
 var sharik = document.getElementsByTagName('audio')[0]
 
