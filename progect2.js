@@ -16,7 +16,7 @@ var bollColors = {
     6:'#F0FFFF'
 }
 
-
+document.body.style.backgroundColor = bollColors[6]
 document.body.style.margin = 0
 document.body.style.fontFamily = 'monospace'
 document.body.style.fontSize = 2+'vh'
@@ -24,7 +24,6 @@ document.body.style.fontSize = 2+'vh'
 //звук взрыва мячика
 var sharik = document.getElementsByTagName('audio')[0]
 
-document.body.style.backgroundColor = bollColors[6]
 
 var button = document.querySelectorAll('button')
 button.forEach(function(item, i) {
@@ -42,6 +41,21 @@ var totalFloors = 0
 var totalBolls = 0//выбирать только четное количество шаров, важно для fieldCreate ()
 var bollRadius = 0
 var yellowFloors = 0
+
+
+var menuDiv = document.getElementById('menu')
+menuDiv.addEventListener('touchmove', changeColorMove,false)
+function changeColorMove(eo) {
+    menuDiv.style.display = 'none'
+    hideField = document.getElementById('Table1').offsetHeight*0.9
+    document.getElementById('forMenu').style.display = "block"
+}
+
+function menuDisplay() {
+    menuDiv.style.display = 'block'
+    hideField = document.getElementById('Table1').offsetHeight*0.7
+    document.getElementById('forMenu').style.display = "none"
+}
 
 
 //вибираем уровни
@@ -72,6 +86,7 @@ function changeLevel(eo) {
 //игровое поле
 var field=document.getElementById('Table');
 var context=field.getContext('2d');
+var hideField = document.getElementById('Table1').offsetHeight*0.7
 
 
 //координаты и цвета мячей
@@ -359,7 +374,7 @@ function createLine() {
 }
 
 function fieldCreate() {
-    field.height = document.getElementById('Table1').offsetHeight*0.7
+    field.height = hideField
     field.width = document.getElementById('Table1').offsetWidth
     bollRadius = field.offsetWidth/totalBolls/2
     context.fillStyle=bollColors[6];//поле
