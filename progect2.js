@@ -341,6 +341,9 @@ function mouseOverMove(eo) {
 }
 
 function fieldCreate() {
+field.height = document.getElementById('Table1').offsetHeight*0.7
+field.width = document.getElementById('Table1').offsetWidth*0.99
+bollRadius = field.offsetWidth/totalBolls/2
     context.fillStyle=bollColors[6];//поле
     context.fillRect(0,0,field.width,field.height);          
     var b = 1
