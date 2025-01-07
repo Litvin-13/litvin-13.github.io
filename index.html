@@ -10,29 +10,27 @@
 </head>
 <body>
 
-    <div id="Table1" style="height:99vh;width:98vw;" >
+    <div id="Table1" style="height:99vh;width:99vw;" >
         <canvas id="Table">
             Обновите браузер
         </canvas>
         <div class="menu" style="text-align: center;">
-            <button type="button" onclick="getStart()">Новая игра</button>
+            <button type="button" onclick="getStart()">Старт</button>
             <button type="button" onclick="showRules()">Правила</button>
             <button type="button" onclick="createNewGamer()">Новый игрок</button>
             <button type="button" onclick="sendRecords()">Сохранить счет</button>
             <button type="button" onclick="getRecords()">Рекорды</button>
         </div>
-        <div>
-            <select name="level" id="level">
-                <option value="level1" selected>уровень 1</option>
-                <option value="level2">уровень 2</option>
-                <option value="level3">уровень 3</option>
-            </select>
+        <div class="level" style="text-align: center;">
+            <input type="radio" name="level" value="level1">уровень 1
+            <input type="radio" name="level" value="level2">уровень 2
+            <input type="radio" name="level" value="level3">уровень 3
         </div>
-        <div class="forCount"></div>
+        <div class="forCount" style="text-align: center;"></div>
         <audio src="sharik.mp3"></audio>
-         <a href="rules.html">Правила</a>
         <!-- <a href="records.html">Рекорды</a>
-        <br> -->
+        <br>
+        <a href="rules.html">Правила</a> -->
     </div>
 
 
