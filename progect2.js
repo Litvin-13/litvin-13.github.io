@@ -53,6 +53,7 @@ function getLevel(a,b) {
     totalFloors = a
     totalBolls = b
     yellowFloors = totalFloors
+    stepDown=0
     createPointColor()
 }
 
