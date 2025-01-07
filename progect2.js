@@ -20,6 +20,7 @@ var bollColors = {
 document.body.style.margin = 0
 document.body.style.fontFamily = 'monospace'
 document.body.style.fontSize = 2+'vh'
+
 //звук взрыва мячика
 var sharik = document.getElementsByTagName('audio')[0]
 
@@ -419,11 +420,22 @@ if(totalFloors===0){
     alert('Выберете уровень игры')
 } else {
     if (localStorage.getItem('игрок')) {
-        stepDown=0.3  
-        createPointColor()
-        field.addEventListener('click',findColor,false)
-        field.addEventListener('touchstart',findVibro,false)
-        field.addEventListener('mousemove',mouseOverMove,false)
+        if(stepDown>0.3) { 
+           var agree =  confirm('Вы хотите потерять данные?')
+        }  else {
+            stepDown=0.3  
+            createPointColor()
+            field.addEventListener('click',findColor,false)
+            field.addEventListener('touchstart',findVibro,false)
+            field.addEventListener('mousemove',mouseOverMove,false) 
+        }
+        if (agree === true) {
+            stepDown=0.3  
+            createPointColor()
+            field.addEventListener('click',findColor,false)
+            field.addEventListener('touchstart',findVibro,false)
+            field.addEventListener('mousemove',mouseOverMove,false) 
+        }
         } 
     else createGamer()
 }
