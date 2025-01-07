@@ -1,7 +1,34 @@
 'use strict'
-document.body.style.margin = 0
+//получение случайного цвета 
+function randomDiap(n,m) {
+    return Math.floor(
+      Math.random()*(m-n+1)
+      )+n;
+}
+var bollColors = {
+    1:'#CD5C5C',
+    2:'#98FB98',
+    3:'#66CDAA',
+    4:'#BC8F8F',
+    5:'#808080',
+    6:'#F0FFFF'
+}
 
+
+document.body.style.margin = 0
+document.body.style.backgroundColor = bollColors[6]
 var newGamer = ''
+
+var button = document.querySelectorAll('button')
+button.forEach(function(item, i) {
+    item.style.width = 12 +'vw'
+    item.style.height = 10 +'vh'
+    item.style.fontSize = 1.5+'vh'
+    item.style.borderRadius = 10+'px'
+    item.style.backgroundColor = 'white'
+    item.style.marginLeft = 1+'%'
+    item.style.cursor = 'pointer'
+  });
 
 
 // var totalFloors = 0//доработать по уровням
@@ -39,27 +66,14 @@ var sharik = document.getElementsByTagName('audio')[0]
 //игровое поле
 var field=document.getElementById('Table');
 var context=field.getContext('2d');
-field.height = document.getElementById('Table1').offsetHeight*0.9
+field.height = document.getElementById('Table1').offsetHeight*0.7
 field.width = document.getElementById('Table1').offsetWidth*0.99
 var totalBolls = 14//выбирать только четное количество шаров, важно для fieldCreate ()
 var totalFloors = 10
 var bollRadius = field.offsetWidth/totalBolls/2
 
 
-//получение случайного цвета 
-function randomDiap(n,m) {
-    return Math.floor(
-      Math.random()*(m-n+1)
-      )+n;
-}
-var bollColors = {
-    1:'green',
-    2:'grey',
-    3:'red',
-    4:'violet',
-    5:'black',
-    6:'yellow'
-}
+
 //координаты и цвета мячей
 var pointBolls = {}
 var colorsBolls = {}
@@ -327,7 +341,7 @@ function mouseOverMove(eo) {
 }
 
 function fieldCreate() {
-    context.fillStyle='yellow';//поле
+    context.fillStyle=bollColors[6];//поле
     context.fillRect(0,0,field.width,field.height);          
     var b = 1
     for (let bollY= 1; bollY <= totalFloors; bollY++) {
@@ -487,5 +501,7 @@ function tick() {
 
 
 }
+
+
 
 
