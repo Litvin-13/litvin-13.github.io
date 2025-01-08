@@ -44,11 +44,15 @@ var yellowFloors = 0
 
 
 var menuDiv = document.getElementById('menu')
-menuDiv.addEventListener('touchmove', changeColorMove,false)
+var touchRight = 0
+menuDiv.addEventListener('touchstart', eo => touchRight = eo.changedTouches[0].clientX,false)
+menuDiv.addEventListener('touchend', changeColorMove,false)
 function changeColorMove(eo) {
-    menuDiv.style.display = 'none'
-    hideField = document.getElementById('Table1').offsetHeight*0.9
-    document.getElementById('forMenu').style.display = "block"
+    if (eo.changedTouches[0].clientX-touchRight>field.width/5) {
+        menuDiv.style.display = 'none'
+        hideField = document.getElementById('Table1').offsetHeight*0.8
+        document.getElementById('forMenu').style.display = "block" 
+    }
 }
 
 function menuDisplay() {
@@ -64,7 +68,7 @@ level[0].addEventListener('change',changeLevel,false)
 level[1].addEventListener('change',changeLevel,false)
 level[2].addEventListener('change',changeLevel,false)
 
-function getLevel(a,b) {
+function getLevel(a,b) {  
     totalFloors = a
     totalBolls = b
     yellowFloors = totalFloors
@@ -130,6 +134,7 @@ class Gamer {
     }
 }
 
+window.addEventListener('load',createGamer,false)
 function createGamer() {
     if (!localStorage.getItem('игрок')) {
     var newItem = new Gamer()
@@ -140,16 +145,47 @@ function createGamer() {
     else 
     newGamer =JSON.parse(localStorage.getItem('игрок')) 
 }
-createGamer()
 
 function createNewGamer() {
-    getStart()
-    if (localStorage.getItem('игрок')) {
-        localStorage.clear('игрок')
-        createGamer() 
-    } else 
-        createGamer() 
+    if(stepDown>0.3) {
+    var agree =  confirm('Вы хотите потерять данные?') 
+        if (agree === true) {
+            stepDown=0
+            if (localStorage.getItem('игрок')) {
+                localStorage.clear('игрок')
+                createGamer() 
+            } else 
+                createGamer()
+        } 
+    } else {
+            stepDown=0
+            if (localStorage.getItem('игрок')) {
+                localStorage.clear('игрок')
+                createGamer() 
+            } else 
+                createGamer()
+    }
 }
+
+
+function getChange(){
+    if(stepDown>0.3) { //добавить проверку, что это конец игры, когда мы выиграли!!!!!!!!!!
+       var agree =  confirm('Вы хотите потерять данные?')
+    }  else {
+        createNewGamer()
+    }
+    if (agree === true) {
+        stepDown=0.3  
+        createPointColor()
+        field.addEventListener('click',findColor,false)
+        field.addEventListener('touchstart',findVibro,false)
+        field.addEventListener('mousemove',mouseOverMove,false) 
+    }
+else createGamer()
+}
+
+
+
 
 //показываем правила
 function showRules() {
@@ -284,6 +320,10 @@ var b = 1
         b = b+2
     }  
     headBollColor = colorBoll//сохраняем полученный цвет главного шарика
+
+    field.addEventListener('click',findColor,false)
+    field.addEventListener('touchstart',findVibro,false)
+    field.addEventListener('mousemove',mouseOverMove,false) 
 }
 
 //находит мяч на поле по клику мыши
@@ -430,31 +470,29 @@ function findVibro(eo) {
     }
 }
 
-function getStart() {   
+
+//доработать только на старт
+function getStart() { 
 if(totalFloors===0){
     alert('Выберете уровень игры')
 } else {
+    
     if (localStorage.getItem('игрок')) {
-        if(stepDown>0.3) { 
+        if(stepDown>0.3) { //добавить проверку, что это конец игры, когда мы выиграли!!!!!!!!!!
            var agree =  confirm('Вы хотите потерять данные?')
+           if (agree === true) {
+            stepDown=0.3  
+            createPointColor()
+            }
         }  else {
             stepDown=0.3  
             createPointColor()
-            field.addEventListener('click',findColor,false)
-            field.addEventListener('touchstart',findVibro,false)
-            field.addEventListener('mousemove',mouseOverMove,false) 
-        }
-        if (agree === true) {
-            stepDown=0.3  
-            createPointColor()
-            field.addEventListener('click',findColor,false)
-            field.addEventListener('touchstart',findVibro,false)
-            field.addEventListener('mousemove',mouseOverMove,false) 
         }
         } 
     else createGamer()
 }
 } 
+
 
 function gameOver(result) {
     context.fillStyle='black';
@@ -473,7 +511,6 @@ setInterval(tick,40);
 function tick() { 
     fieldCreate()
     createLine()  
-
     if (stepDown>=0.3) {
         stepDown+=0.3 
     } 
@@ -519,7 +556,8 @@ function tick() {
     }  
     if (countYellowBolls!==0&&countYellowBolls===(totalBolls*totalFloors)) {//&&counter!==0 - привязать к другому значению
         gameOver('Вы выиграли!')
-        yellowFloors=totalFloors        
+        yellowFloors=totalFloors 
+        stepDown=0
      } else {     
         if (totalBolls!==0&&(pointBolls[yellowFloors][totalBolls]['y мяча'])>field.offsetHeight-bollRadius*3) {
                 var countYellowBollsInFloor = 0
@@ -533,10 +571,12 @@ function tick() {
                 } else if (countYellowBollsInFloor!==totalBolls){
                         gameOver('Вы проиграли!')
                         stepDown+=10
-                        }
+                        if ((pointBolls[1][totalBolls]['y мяча'])>field.offsetHeight-bollRadius*3) {
+                        stepDown=0
+                    }
+                    }
                 } 
             }    
-
 
 }
 
