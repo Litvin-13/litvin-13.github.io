@@ -20,13 +20,8 @@ document.body.style.backgroundColor = bollColors[6]
 document.body.style.margin = 0
 document.body.style.fontFamily = 'monospace'
 document.body.style.fontSize = 2+'vh'
-
-//звук взрыва мячика
-var sharik = document.getElementsByTagName('audio')[0]
-
-
 var button = document.querySelectorAll('button')
-button.forEach(function(item, i) {
+button.forEach(function(item) {
     item.style.padding = 1 +'vh'
     item.style.fontSize = 2+'vh'
     item.style.borderRadius = 10+'px'
@@ -36,13 +31,15 @@ button.forEach(function(item, i) {
     item.style.fontFamily = 'monospace'
   });
 
+//звук взрыва мячика
+var sharik = document.getElementsByTagName('audio')[0]
 
 var totalFloors = 0
 var totalBolls = 0//выбирать только четное количество шаров, важно для fieldCreate ()
 var bollRadius = 0
 var yellowFloors = 0
 
-
+//скрыть меню тач в право на мобильном
 var menuDiv = document.getElementById('menu')
 var touchRight = 0
 menuDiv.addEventListener('touchstart', eo => touchRight = eo.changedTouches[0].clientX,false)
@@ -63,7 +60,7 @@ function menuDisplay() {
 
 
 //вибираем уровни
-var level = document.getElementsByTagName('input')//сделать выбор уровнней  - доработать все
+var level = document.getElementsByTagName('input')
 level[0].addEventListener('change',changeLevel,false)
 level[1].addEventListener('change',changeLevel,false)
 level[2].addEventListener('change',changeLevel,false)
@@ -92,7 +89,6 @@ var field=document.getElementById('Table');
 var context=field.getContext('2d');
 var hideField = document.getElementById('Table1').offsetHeight*0.7
 
-
 //координаты и цвета мячей
 var pointBolls = {}
 var colorsBolls = {}
@@ -118,7 +114,6 @@ var X = 0
 var ctg = 0
 var line = []
 var colorHover = 0
-
 
 //создаем нового игрока
 var newGamer = ''
@@ -168,30 +163,18 @@ function createNewGamer() {
 }
 
 
-function getChange(){
-    if(stepDown>0.3) { //добавить проверку, что это конец игры, когда мы выиграли!!!!!!!!!!
-       var agree =  confirm('Вы хотите потерять данные?')
-    }  else {
-        createNewGamer()
-    }
-    if (agree === true) {
-        stepDown=0.3  
-        createPointColor()
-        field.addEventListener('click',findColor,false)
-        field.addEventListener('touchstart',findVibro,false)
-        field.addEventListener('mousemove',mouseOverMove,false) 
-    }
-else createGamer()
-}
-
-
-
-
 //показываем правила
 function showRules() {
-    alert(
-        'Разноцветные шарики плавно опускаются снизу рядами. Внизу есть главный шар, который выбивает шары из появляющегося поля, если совпадает цвет. Как только нижний уровень достигне уровня главного шара - вы проиграли. Если успели выбить все шары - вы выиграли. Шарики можно выбивать только по горизонтали и вертикали от шара, по которому вы попали. Если попали в шар, который не соответсвует цвеиу главного шара - этот шар не исчезает, а меняет свой цвет, при этом шары по вертикали и горизонтали не выбиваются.'
-    )
+    document.getElementById('rules').style.display='block';
+    document.getElementById('forTopic').innerHTML = 'Разноцветные шарики плавно опускаются снизу рядами. Внизу есть главный шар, который выбивает шары из появляющегося поля, если совпадает цвет. Как только нижний уровень достигне уровня главного шара - вы проиграли. Если успели выбить все шары - вы выиграли. Шарики можно выбивать только по горизонтали и вертикали от шара, по которому вы попали. Если попали в шар, который не соответсвует цвету главного шара - этот шар не исчезает, а меняет свой цвет, при этом шары по вертикали и горизонтали не выбиваются.'
+}
+
+function closeRules() {
+    document.getElementById('rules').style.display='none';
+}
+         
+function modalWindowClick(eo) {
+    eo.stopPropagation();
 }
 
 //сохранение и вывод рекордов
@@ -206,7 +189,7 @@ function sendRecords() {//в конце игры сохраняет рекорд
             success : lockGetReady,
             error : errorHandler
         }
-    );
+    )
 }
              
 function lockGetReady(callresult) {
@@ -239,23 +222,23 @@ function lockGetReady(callresult) {
 }
 
 function updateReady(callresult) {
-    if ( callresult.error!=undefined )
+    if (callresult.error!=undefined)
         alert(callresult.error);
 }
 
 function getRecords() {
     $.ajax( {
-            url : ajaxHandlerScript,
-            type : 'POST', dataType:'json',
-            data : { f : 'READ', n : stringName },
-            cache : false,
-            success : readReady,
-            error : errorHandler
-        }
+        url : ajaxHandlerScript,
+        type : 'POST', dataType:'json',
+        data : { f : 'READ', n : stringName },
+        cache : false,
+        success : readReady,
+        error : errorHandler}
     )
-}
-
+    }
+    
 function readReady(callresult) {
+    document.getElementById('records').style.display='block';
     if ( callresult.error!=undefined )
         alert(callresult.error);
     else {
@@ -267,12 +250,16 @@ function readReady(callresult) {
         }
     let str='';
     for ( let r=0; r<records.length; r++ ) {
-        str+=escapeHTML(records[r].name)+": "+ records[r].record+"; "//изменить способ выведения рекордов. Модальное окно?
-    }
-alert(str)
+        str+=escapeHTML(records[r].name)+": "+ records[r].record+"<br>"
+    } 
+    document.getElementById('forResult').innerHTML = str
   }
 }
 
+function closeRecords() {
+document.getElementById('records').style.display='none';
+}
+     
 function escapeHTML(text) {
     if ( !text )
         return text;
@@ -382,6 +369,9 @@ function changeColor() {
     }
     } else {
         colorsBolls[stopBollY][stopBollX]=stopColor
+        if (counter>0) {
+            counter--
+        }
         move=1
     }
 }
@@ -471,14 +461,12 @@ function findVibro(eo) {
 }
 
 
-//доработать только на старт
 function getStart() { 
 if(totalFloors===0){
     alert('Выберете уровень игры')
 } else {
-    
     if (localStorage.getItem('игрок')) {
-        if(stepDown>0.3) { //добавить проверку, что это конец игры, когда мы выиграли!!!!!!!!!!
+        if(stepDown>0.3) { 
            var agree =  confirm('Вы хотите потерять данные?')
            if (agree === true) {
             stepDown=0.3  
@@ -493,7 +481,6 @@ if(totalFloors===0){
 }
 } 
 
-
 function gameOver(result) {
     context.fillStyle='black';
     context.font=`italic bold 20px Arial` 
@@ -502,21 +489,13 @@ function gameOver(result) {
     field.removeEventListener('click',findColor,false)
     field.removeEventListener('mousemove',mouseOverMove,false)
     field.removeEventListener('touchstart',findVibro,false)
+    if (result==='Вы выиграли!'&&stepDown>0) {
+        sendRecords()
+    }
 }
 
-
-var stepDown = 0//скорость движения игры
-setInterval(tick,40);
-
-function tick() { 
-    fieldCreate()
-    createLine()  
-    if (stepDown>=0.3) {
-        stepDown+=0.3 
-    } 
-    countTable.innerHTML = `Ваш счет:${counter}`
-
-    //полет мячика
+//полет мячика
+function flyBoll(){
     if (stopBollX!==0&&stopBollY!==0&&colorsBolls[stopBollY][stopBollX]!==bollColors[6]&&move!==1) {//написать боле логично!!!!!!!! move!==1-чтобы звук не включаля повторно
         if (stopBollX>totalBolls/2){//шарик летит вправо
             if ((field.offsetWidth/2+X)<pointBolls[stopBollY][stopBollX]['x мяча']) {
@@ -544,7 +523,19 @@ function tick() {
             }   
         }   
     }
-    
+}
+
+var stepDown = 0//скорость движения игры
+setInterval(tick,40);
+function tick() { 
+    if (stepDown>=0.3) {
+        stepDown+=0.3 
+    } 
+    countTable.innerHTML = `Игрок:${newGamer}. Ваш счет:${counter}`
+    fieldCreate()
+    createLine() 
+    flyBoll() 
+
     //конец игры         
     var countYellowBolls = 0
     for (let bollY = 1; bollY <= totalFloors; bollY++) {
@@ -569,16 +560,18 @@ function tick() {
                 if (countYellowBollsInFloor===totalBolls) {
                     yellowFloors--
                 } else if (countYellowBollsInFloor!==totalBolls){
-                        gameOver('Вы проиграли!')
                         stepDown+=10
+                        gameOver('Вы проиграли!')
                         if ((pointBolls[1][totalBolls]['y мяча'])>field.offsetHeight-bollRadius*3) {
                         stepDown=0
-                    }
+                        }
                     }
                 } 
             }    
 
 }
+
+
 
 
 
