@@ -17,9 +17,20 @@
         <div id="menu" style="text-align: center;">
             <button type="button" onclick="getStart()">Старт</button>
             <button type="button" onclick="showRules()">Правила</button>
+            <div id="rules" onclick="modalWindowClick(event)">
+                <div id="forRules">
+                    <p id="forTopic"></p>
+                    <button onclick="closeRules()">Ок</button>
+                </div>
+            </div>
             <button type="button" onclick="createNewGamer()">Новый игрок</button>
-            <button type="button" onclick="sendRecords()">Сохранить счет</button>
             <button type="button" onclick="getRecords()">Рекорды</button>
+            <div id="records" onclick="modalWindowClick(event)">
+                <div id="forRecords">
+                    <p id="forResult"></p>
+                    <button onclick="closeRecords()">Ок</button>
+                </div>
+            </div>
             <div id="level" style="text-align: center;">
                 <input type="radio" name="level" value="level1">уровень 1
                 <input type="radio" name="level" value="level2">уровень 2
@@ -30,14 +41,8 @@
         <div class="forCount" style="text-align: center;"></div>
         <audio src="sharik.mp3"></audio>
         <button id="forMenu" type="button" onclick="menuDisplay()">Вернуть меню</button>
-
-        <!-- <a href="records.html">Рекорды</a>
-        <br>
-        <a href="rules.html">Правила</a> -->
     </div>
-
-
     <script src="https://fe.it-academy.by/JQ/jquery.js"></script>
-<script src="progect2.js"></script>
+    <script src="progect2.js"></script>
 </body>
 </html>
