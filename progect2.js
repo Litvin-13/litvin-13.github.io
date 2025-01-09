@@ -1,6 +1,5 @@
 'use strict'
 
-
 //получение случайного цвета 
 function randomDiap(n,m) {
     return Math.floor(
@@ -31,6 +30,10 @@ button.forEach(function(item) {
     item.style.fontFamily = 'monospace'
   });
 
+//игровое поле
+var field=document.getElementById('Table');
+var context=field.getContext('2d');
+
 //звук взрыва мячика
 var sharik = document.getElementsByTagName('audio')[0]
 
@@ -39,7 +42,7 @@ var totalBolls = 0//выбирать только четное количест�
 var bollRadius = 0
 var yellowFloors = 0
 
-//скрыть меню тач в право на мобильном
+//скрыть меню - тач вправо на мобильном
 var menuDiv = document.getElementById('menu')
 var touchRight = 0
 menuDiv.addEventListener('touchstart', eo => touchRight = eo.changedTouches[0].clientX,false)
@@ -47,24 +50,19 @@ menuDiv.addEventListener('touchend', changeColorMove,false)
 function changeColorMove(eo) {
     if (eo.changedTouches[0].clientX-touchRight>field.width/5) {
         menuDiv.style.display = 'none'
-        hideField = document.getElementById('Table1').offsetHeight*0.8
         document.getElementById('forMenu').style.display = "block" 
     }
 }
-
 function menuDisplay() {
     menuDiv.style.display = 'block'
-    hideField = document.getElementById('Table1').offsetHeight*0.7
     document.getElementById('forMenu').style.display = "none"
 }
-
 
 //вибираем уровни
 var level = document.getElementsByTagName('input')
 level[0].addEventListener('change',changeLevel,false)
 level[1].addEventListener('change',changeLevel,false)
 level[2].addEventListener('change',changeLevel,false)
-
 function getLevel(a,b) {  
     totalFloors = a
     totalBolls = b
@@ -72,7 +70,6 @@ function getLevel(a,b) {
     stepDown=0
     createPointColor()
 }
-
 function changeLevel(eo) {
     eo=eo||window.event   
     if (eo.target.value==='level1') {
@@ -83,11 +80,6 @@ function changeLevel(eo) {
         getLevel(20,20)
     } 
 }
-
-//игровое поле
-var field=document.getElementById('Table');
-var context=field.getContext('2d');
-var hideField = document.getElementById('Table1').offsetHeight*0.7
 
 //координаты и цвета мячей
 var pointBolls = {}
@@ -128,7 +120,6 @@ class Gamer {
         localStorage.setItem('игрок',JSON.stringify(this.gamer))     
     }
 }
-
 window.addEventListener('load',createGamer,false)
 function createGamer() {
     if (!localStorage.getItem('игрок')) {
@@ -140,7 +131,6 @@ function createGamer() {
     else 
     newGamer =JSON.parse(localStorage.getItem('игрок')) 
 }
-
 function createNewGamer() {
     if(stepDown>0.3) {
     var agree =  confirm('Вы хотите потерять данные?') 
@@ -168,17 +158,15 @@ function showRules() {
     document.getElementById('rules').style.display='block';
     document.getElementById('forTopic').innerHTML = 'Разноцветные шарики плавно опускаются снизу рядами. Внизу есть главный шар, который выбивает шары из появляющегося поля, если совпадает цвет. Как только нижний уровень достигне уровня главного шара - вы проиграли. Если успели выбить все шары - вы выиграли. Шарики можно выбивать только по горизонтали и вертикали от шара, по которому вы попали. Если попали в шар, который не соответсвует цвету главного шара - этот шар не исчезает, а меняет свой цвет, при этом шары по вертикали и горизонтали не выбиваются.'
 }
-
 function closeRules() {
     document.getElementById('rules').style.display='none';
-}
-         
+}      
 function modalWindowClick(eo) {
     eo.stopPropagation();
 }
 
 //сохранение и вывод рекордов
-function sendRecords() {//в конце игры сохраняет рекорды?пока только по кнопке. 
+function sendRecords() {
     updatePassword=Math.random();
     $.ajax( {
             url : ajaxHandlerScript,
@@ -235,7 +223,7 @@ function getRecords() {
         success : readReady,
         error : errorHandler}
     )
-    }
+}
     
 function readReady(callresult) {
     document.getElementById('records').style.display='block';
@@ -256,7 +244,7 @@ function readReady(callresult) {
   }
 }
 
-function closeRecords() {
+function closeRecords() {//закрываем модальное окно с рекордами
 document.getElementById('records').style.display='none';
 }
      
@@ -404,8 +392,12 @@ function createLine() {
 }
 
 function fieldCreate() {
-    field.height = hideField
+    if (menuDiv.style.display === 'none') {
+    field.height = document.getElementById('Table1').offsetHeight*0.8
+    } else
+    field.height = document.getElementById('Table1').offsetHeight*0.7
     field.width = document.getElementById('Table1').offsetWidth
+    
     bollRadius = field.offsetWidth/totalBolls/2
     context.fillStyle=bollColors[6];//поле
     context.fillRect(0,0,field.width,field.height);          
@@ -525,11 +517,19 @@ function flyBoll(){
     }
 }
 
+//перезагруза страницы
+window.onbeforeunload=befUnload;
+function befUnload(eo) {
+  eo=eo||window.event;
+  if ( stepDown>0.3 )
+    eo.returnValue='Игра не закончена!';
+}
+
 var stepDown = 0//скорость движения игры
 setInterval(tick,40);
 function tick() { 
     if (stepDown>=0.3) {
-        stepDown+=0.3 
+        stepDown+=0.3//увеличение скорости 
     } 
     countTable.innerHTML = `Игрок:${newGamer}. Ваш счет:${counter}`
     fieldCreate()
@@ -560,8 +560,8 @@ function tick() {
                 if (countYellowBollsInFloor===totalBolls) {
                     yellowFloors--
                 } else if (countYellowBollsInFloor!==totalBolls){
-                        stepDown+=10
                         gameOver('Вы проиграли!')
+                        stepDown+=10
                         if ((pointBolls[1][totalBolls]['y мяча'])>field.offsetHeight-bollRadius*3) {
                         stepDown=0
                         }
@@ -570,9 +570,5 @@ function tick() {
             }    
 
 }
-
-
-
-
 
 
