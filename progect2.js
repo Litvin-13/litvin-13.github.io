@@ -59,10 +59,10 @@ function menuDisplay() {
 }
 
 //вибираем уровни
-var level = document.getElementsByTagName('input')
-level[0].addEventListener('change',changeLevel,false)
-level[1].addEventListener('change',changeLevel,false)
-level[2].addEventListener('change',changeLevel,false)
+var level = document.querySelectorAll('input')
+level.forEach(element => {
+    element.addEventListener('change',changeLevel,false)
+});
 function getLevel(a,b) {  
     totalFloors = a
     totalBolls = b
