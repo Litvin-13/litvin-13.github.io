@@ -1,5 +1,6 @@
 'use strict'
 
+
 //получение случайного цвета 
 function randomDiap(n,m) {
     return Math.floor(
@@ -21,7 +22,7 @@ document.body.style.fontFamily = 'monospace'
 document.body.style.fontSize = 2+'vh'
 var button = document.querySelectorAll('button')
 button.forEach(function(item) {
-    item.style.padding = 1 +'vh'
+    item.style.padding = 0.5 +'vh'
     item.style.fontSize = 2+'vh'
     item.style.borderRadius = 10+'px'
     item.style.backgroundColor = 'white'
@@ -33,6 +34,19 @@ button.forEach(function(item) {
 //игровое поле
 var field=document.getElementById('Table');
 var context=field.getContext('2d');
+field.style.display = 'block'
+field.style.margin='0 auto'
+var tableHeight = document.getElementById('Table1').offsetHeight
+var tableWidth = document.getElementById('Table1').offsetWidth
+var screen = tableWidth/tableHeight
+
+if (screen>=1) {
+    field.height = document.getElementById('Table1').offsetHeight*0.9
+    field.width = field.height
+    }else{
+    field.width = document.getElementById('Table1').offsetWidth
+    field.height = field.width*0.9
+    }
 
 //звук взрыва мячика
 var sharik = document.getElementsByTagName('audio')[0]
@@ -151,7 +165,6 @@ function createNewGamer() {
                 createGamer()
     }
 }
-
 
 //показываем правила
 function showRules() {
@@ -286,12 +299,11 @@ var b = 1
         colorsBolls[bollY] = {}
         for (let bollX = 1; bollX <= totalBolls; bollX++) {
             var colorBoll = bollColors[randomDiap(1,5)] 
-            var x = field.offsetLeft+bollRadius*a
+            var x =bollRadius*a
             var y = field.offsetTop+bollRadius*b
             pointBolls[bollY][bollX] = {'x мяча':x,'y мяча':y}
             colorsBolls[bollY][bollX]= colorBoll
-            a = a+2            
-        }
+            a = a+2             }
         b = b+2
     }  
     headBollColor = colorBoll//сохраняем полученный цвет главного шарика
@@ -310,7 +322,7 @@ function findColor(eo) {
     move=0
     for (let bollY= 1; bollY <= totalFloors; bollY++) {
         for (let bollX = 1; bollX <= totalBolls; bollX++) {
-            if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
+            if (eoX-field.getBoundingClientRect().left>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX-field.getBoundingClientRect().left<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
                 if (bollX>totalBolls/2) {
                     ctg = (pointBolls[bollY][bollX]['x мяча']-field.offsetWidth/2)/(field.height-bollRadius-pointBolls[bollY][bollX]['y мяча'])                    
                 } else if (bollX<=totalBolls/2){
@@ -371,7 +383,7 @@ function mouseOverMove(eo) {
     var eoY =eo.pageY;
     for (let bollY= 1; bollY <= totalFloors; bollY++) {
         for (let bollX = 1; bollX <= totalBolls; bollX++) {
-            if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {                      
+            if (eoX-field.getBoundingClientRect().left>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX-field.getBoundingClientRect().left<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {                      
             line = [pointBolls[bollY][bollX]['x мяча'],pointBolls[bollY][bollX]['y мяча']]
             colorHover = colorsBolls[bollY][bollX]
             }
@@ -392,12 +404,17 @@ function createLine() {
 }
 
 function fieldCreate() {
-    if (menuDiv.style.display === 'none') {
-    field.height = document.getElementById('Table1').offsetHeight*0.8
-    } else
-    field.height = document.getElementById('Table1').offsetHeight*0.7
-    field.width = document.getElementById('Table1').offsetWidth
-    
+    tableHeight = document.getElementById('Table1').offsetHeight
+    tableWidth = document.getElementById('Table1').offsetWidth
+    screen = tableWidth/tableHeight
+    if (screen>=1) {
+        field.height = document.getElementById('Table1').offsetHeight*0.9
+        field.width = field.height
+        }else{
+        field.width = document.getElementById('Table1').offsetWidth
+        field.height = field.width*0.9
+        }
+
     bollRadius = field.offsetWidth/totalBolls/2
     context.fillStyle=bollColors[6];//поле
     context.fillRect(0,0,field.width,field.height);          
@@ -407,9 +424,9 @@ function fieldCreate() {
         for (let bollX = 1; bollX <= totalBolls; bollX++) {//записываем координаты сместившихся на ряд мячей, которые мы видим
             context.fillStyle = colorsBolls[bollY][bollX]
             context.beginPath()
-            context.arc((field.offsetLeft+bollRadius*a),(bollRadius*b+stepDown-(bollRadius*2*totalFloors)),bollRadius,0,Math.PI*2, false)
+            context.arc((bollRadius*a),(bollRadius*b+stepDown-(bollRadius*2*totalFloors)),bollRadius,0,Math.PI*2, false)
             context.fill() 
-            var x = field.offsetLeft+bollRadius*a
+            var x = bollRadius*a
             var y = bollRadius*b+stepDown-(bollRadius*2*totalFloors)
             pointBolls[bollY][bollX] = {'x мяча':x,'y мяча':y}                
             a = a+2         
@@ -442,7 +459,7 @@ function findVibro(eo) {
         var eoY =eo.changedTouches[t].pageY;
         for (let bollY= 1; bollY <= totalFloors; bollY++) {
             for (let bollX = 1; bollX <= totalBolls; bollX++) {
-                if (eoX>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
+                if (eoX-field.getBoundingClientRect().left>pointBolls[bollY][bollX]['x мяча']-bollRadius&&eoX-field.getBoundingClientRect().left<pointBolls[bollY][bollX]['x мяча']+bollRadius&&eoY>pointBolls[bollY][bollX]['y мяча']-bollRadius&&eoY<pointBolls[bollY][bollX]['y мяча']+bollRadius) {
                     if (colorsBolls[bollY][bollX]!==headBollColor) {
                         window.navigator.vibrate(200)
                      }
