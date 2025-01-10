@@ -546,7 +546,7 @@ var stepDown = 0//скорость движения игры
 setInterval(tick,40);
 function tick() { 
     if (stepDown>=0.3) {
-        stepDown+=0.3//увеличение скорости 
+        stepDown+=(field.offsetHeight*0.0003)
     } 
     countTable.innerHTML = `Игрок:${newGamer}. Ваш счет:${counter}`
     fieldCreate()
