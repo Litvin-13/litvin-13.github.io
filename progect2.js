@@ -39,14 +39,38 @@ field.style.margin='0 auto'
 var tableHeight = document.getElementById('Table1').offsetHeight
 var tableWidth = document.getElementById('Table1').offsetWidth
 var screen = tableWidth/tableHeight
-
-if (screen>=1) {
+function createScreen() {
+ if (screen>1.5) {
     field.height = document.getElementById('Table1').offsetHeight*0.9
     field.width = field.height
-    }else{
+    document.getElementById('menu').style.position = 'absolute'
+    document.getElementById('menu').style.top = '50%'
+    document.getElementById('menu').style.display = 'flex'
+    document.getElementById('menu').style.flexDirection = 'column'
+    document.getElementById('menu').style.width = '10%'
+    document.getElementById('forMenu').style.display = 'none'
+    }else if (screen>1) {
+        field.height = document.getElementById('Table1').offsetHeight*0.9
+        field.width = field.height
+        document.getElementById('menu').style.position = 'static'
+        document.getElementById('menu').style.display = 'block'
+        document.getElementById('menu').style.width = '100%'
+        document.getElementById('forMenu').style.display = 'none'
+    } else if (screen<1){
     field.width = document.getElementById('Table1').offsetWidth
     field.height = field.width*0.9
+    document.getElementById('menu').style.position = 'static'
+    document.getElementById('menu').style.width = '100%'
+    if (touchRightLong===0) {
+        document.getElementById('menu').style.display = 'block'
+        document.getElementById('forMenu').style.display = 'none'
+    } else{
+        document.getElementById('menu').style.display = 'none'
+        document.getElementById('forMenu').style.display = 'block'
     }
+    }   
+}
+createScreen()
 
 //звук взрыва мячика
 var sharik = document.getElementsByTagName('audio')[0]
@@ -55,22 +79,6 @@ var totalFloors = 0
 var totalBolls = 0//выбирать только четное количество шаров, важно для fieldCreate ()
 var bollRadius = 0
 var yellowFloors = 0
-
-//скрыть меню - тач вправо на мобильном
-var menuDiv = document.getElementById('menu')
-var touchRight = 0
-menuDiv.addEventListener('touchstart', eo => touchRight = eo.changedTouches[0].clientX,false)
-menuDiv.addEventListener('touchend', changeColorMove,false)
-function changeColorMove(eo) {
-    if (eo.changedTouches[0].clientX-touchRight>field.width/5) {
-        menuDiv.style.display = 'none'
-        document.getElementById('forMenu').style.display = "block" 
-    }
-}
-function menuDisplay() {
-    menuDiv.style.display = 'block'
-    document.getElementById('forMenu').style.display = "none"
-}
 
 //вибираем уровни
 var level = document.querySelectorAll('input')
@@ -301,9 +309,9 @@ var b = 1
             var colorBoll = bollColors[randomDiap(1,5)] 
             var x =bollRadius*a
             var y = field.offsetTop+bollRadius*b
-            pointBolls[bollY][bollX] = {'x мяча':x,'y мяча':y}
             colorsBolls[bollY][bollX]= colorBoll
-            a = a+2             }
+            a = a+2 
+            }
         b = b+2
     }  
     headBollColor = colorBoll//сохраняем полученный цвет главного шарика
@@ -311,6 +319,7 @@ var b = 1
     field.addEventListener('click',findColor,false)
     field.addEventListener('touchstart',findVibro,false)
     field.addEventListener('mousemove',mouseOverMove,false) 
+    
 }
 
 //находит мяч на поле по клику мыши
@@ -406,16 +415,9 @@ function createLine() {
 function fieldCreate() {
     tableHeight = document.getElementById('Table1').offsetHeight
     tableWidth = document.getElementById('Table1').offsetWidth
-    screen = tableWidth/tableHeight
-    if (screen>=1) {
-        field.height = document.getElementById('Table1').offsetHeight*0.9
-        field.width = field.height
-        }else{
-        field.width = document.getElementById('Table1').offsetWidth
-        field.height = field.width*0.9
-        }
-
-    bollRadius = field.offsetWidth/totalBolls/2
+    screen = tableWidth/tableHeight 
+    createScreen()
+    bollRadius = field.width/totalBolls/2
     context.fillStyle=bollColors[6];//поле
     context.fillRect(0,0,field.width,field.height);          
     var b = 1
@@ -433,11 +435,13 @@ function fieldCreate() {
         }
         b = b+2      
     }  
+    
     context.fillStyle = headBollColor
     context.beginPath()
     context.arc(field.offsetWidth/2,(field.offsetHeight-bollRadius),bollRadius,0,Math.PI*2, false)
     context.fill() 
-    
+
+   
     //отрисовка полета шарика к цели
     if (stopBollX>totalBolls/2) {
     context.fillStyle = stopColor
@@ -450,6 +454,27 @@ function fieldCreate() {
     context.arc((field.offsetWidth/2-X),((field.offsetHeight-bollRadius) -(field.offsetWidth/2-(field.offsetWidth/2-X))/ctg),bollRadius,0,Math.PI*2, false)//это расчет, если клик по Х после главного мяча
     context.fill()   
     } 
+}
+
+//скрыть меню - тач вправо на мобильном
+var menuDiv = document.getElementById('menu')
+var touchRight = 0
+var touchRightLong = 0
+menuDiv.addEventListener('touchstart', eo => touchRight = eo.changedTouches[0].clientX,false)
+menuDiv.addEventListener('touchend', changeColorMove,false)
+function changeColorMove(eo) {
+    touchRightLong = eo.changedTouches[0].clientX-touchRight
+    if (screen>1) {
+        touchRightLong = 0 
+    } else if (touchRightLong>field.width/5) {
+        menuDiv.style.display = 'none'
+        document.getElementById('forMenu').style.display = "block" 
+    }
+}
+function menuDisplay() {
+    menuDiv.style.display = 'block'
+    document.getElementById('forMenu').style.display = "none"
+    touchRightLong = 0 
 }
 
 //находим шарик, по которому нажали на тачскрине и если цвет мяча не соответсвует цвету главного мяча - виброотклик
@@ -468,7 +493,6 @@ function findVibro(eo) {
         }   
     }
 }
-
 
 function getStart() { 
 if(totalFloors===0){
@@ -542,17 +566,18 @@ function befUnload(eo) {
     eo.returnValue='Игра не закончена!';
 }
 
+
 var stepDown = 0//скорость движения игры
 setInterval(tick,40);
 function tick() { 
-    if (stepDown>=0.3) {
-        stepDown+=(field.offsetHeight*0.0003)
-    } 
+    
     countTable.innerHTML = `Игрок:${newGamer}. Ваш счет:${counter}`
     fieldCreate()
     createLine() 
     flyBoll() 
-
+    if (stepDown>=0.3) {
+        stepDown+=(field.offsetHeight*0.0003)
+    } 
     //конец игры         
     var countYellowBolls = 0
     for (let bollY = 1; bollY <= totalFloors; bollY++) {
