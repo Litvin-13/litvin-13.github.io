@@ -49,7 +49,7 @@ function createScreen() {
     document.getElementById('menu').style.flexDirection = 'column'
     document.getElementById('menu').style.width = '10%'
     document.getElementById('forMenu').style.display = 'none'
-    }else if (screen>1) {
+    }else if (screen>=1) {
         field.height = document.getElementById('Table1').offsetHeight*0.9
         field.width = field.height
         document.getElementById('menu').style.position = 'static'
@@ -464,7 +464,7 @@ menuDiv.addEventListener('touchstart', eo => touchRight = eo.changedTouches[0].c
 menuDiv.addEventListener('touchend', changeColorMove,false)
 function changeColorMove(eo) {
     touchRightLong = eo.changedTouches[0].clientX-touchRight
-    if (screen>1) {
+    if (screen>=1) {
         touchRightLong = 0 
     } else if (touchRightLong>field.width/5) {
         menuDiv.style.display = 'none'
@@ -475,6 +475,7 @@ function menuDisplay() {
     menuDiv.style.display = 'block'
     document.getElementById('forMenu').style.display = "none"
     touchRightLong = 0 
+    touchRight = 0
 }
 
 //находим шарик, по которому нажали на тачскрине и если цвет мяча не соответсвует цвету главного мяча - виброотклик
