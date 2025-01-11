@@ -56,11 +56,13 @@ function createScreen() {
         document.getElementById('menu').style.display = 'block'
         document.getElementById('menu').style.width = '100%'
         document.getElementById('forMenu').style.display = 'none'
+        inlineP()
     } else if (screen<1){
     field.width = document.getElementById('Table1').offsetWidth
     field.height = field.width*0.9
     document.getElementById('menu').style.position = 'static'
     document.getElementById('menu').style.width = '100%'
+    inlineP()
     if (touchRightLong===0) {
         document.getElementById('menu').style.display = 'block'
         document.getElementById('forMenu').style.display = 'none'
@@ -71,6 +73,13 @@ function createScreen() {
     }   
 }
 createScreen()
+
+function inlineP() {
+    var allP = [...document.getElementsByClassName('inline')]
+    allP.forEach(elem => {
+        elem.style.display = 'inline'
+    });   
+}
 
 //звук взрыва мячика
 var sharik = document.getElementsByTagName('audio')[0]
