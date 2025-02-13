@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="technoHouse.css">
+    <link rel="icon" href="TH/LogoTitle.png">
+    <link href="fontawesome-free-6.5.2-web/css/fontawesome.css" rel="stylesheet" />
+    <link href="fontawesome-free-6.5.2-web/css/brands.css" rel="stylesheet" />
+    <link href="fontawesome-free-6.5.2-web/css/solid.css" rel="stylesheet" />
+    <title id="title">TechnoHouse.Техника в Беларуси</title>
+</head>
+<body>
+    <div class="background">
+    <header>
+        <a href="#inHead"><button class="inHeader">&#9650;<span>Наверх</span></button></a>
+        <div class="header__burgerMenu">
+            <div>
+                <a href="technoHouse.html"><img src="TH/ЛоготипTH.png" alt="logo" id="logo"></a>
+            </div>
+            <div class="head">
+                <p id="phone"><i class="fa-solid fa-phone"></i> +375 44 462-80-43</p>
+            </div>
+            <div class="burger-menu">
+            <button onclick="change()" class="menu__btn"><span id="spanMenu" class="spanMenu"></span><span id="spanMenu2" class="spanMenu2"></span><span id="spanMenu3" class="spanMenu3"></span></button>
+            <ul id="burger" class="burgerNone" onclick="closeMenu()">
+                <a href="naushniki.html" title="Наушники"><li>Наушники</li></a>
+                <a href="smart-watch.html" title="Смарт-часы"><li>Смарт-часы</li></a>
+                <a href="sound.html" title="Колонки"><li>Колонки</li></a>
+                <a href="others.html" title="Другая техника"><li>Другая техника</li></a>
+                <a href="#delivery" title="Доставка"><li>Доставка</li></a>
+                <a href="#footer" title="Контакты"><li>Контакты</li></a>
+            </ul>
+            </div>
+        </div>
+        <div class="header__h1" id="inHead">
+            <h1>TehnoHouse. Техника в Беларуси</h1>
+        </div>
+    </header>
+    <section class="menu">
+        <div class="menu hiddenMob">
+            <ul>
+                <a href="naushniki.html" title="Наушники"><li>Наушники</li></a>
+                <a href="smart-watch.html" title="Смарт-часы"><li>Смарт-часы</li></a>
+                <a href="sound.html" title="Колонки"><li>Колонки</li></a>
+                <a href="others.html" title="Другая техника"><li>Другая техника</li></a>
+                <a href="#delivery" title="Доставка"><li>Доставка</li></a>
+                <a href="#footer" title="Контакты"><li>Контакты</li></a>
+            </ul>
+        </div>
+    </section>
+    <section class="news">
+        <div class="slider__news">
+            <div class="item__news">
+                <img src="TH/Instagram.jpg" alt="Instagram">
+            </div>
+            <div class="item__news">
+                <img src="TH/Delivery.jpg" alt="Delivery">
+            </div>
+            <div class="item__news">
+                <img src="TH/Marshal.jpg" alt="Marshal">        
+            </div>
+            <a class="prev" onclick="prevSlide()">&#10094;</a>
+            <a class="next" onclick="nextSlide()">&#10095;</a>
+        </div>       
+        <br>      
+        <div class="slider-dots">
+            <span class="slider-dots_item" onclick="currentSlider(0)"></span>
+            <span class="slider-dots_item" onclick="currentSlider(1)"></span>
+            <span class="slider-dots_item" onclick="currentSlider(2)"></span>
+        </div>
+    </section>
+</div>
+    <section class="popular">
+        <h3>Популярные разделы</h3>
+        <div class="popular__items">
+            <div class="imgHref naushniki">
+                <a href="naushniki.html" title="Наушники">
+                    <img src="TH/naushnici-menu.png" alt="наушники">
+                    <p>Наушники</p>                   
+                </a>
+            </div>
+            <div class="imgHref watch">
+                <a href="smart-watch.html" title="Смарт-часы">
+                    <img src="TH/watch-menu.png" alt="часы">
+                    <p>Смарт-часы</p>
+                </a>
+            </div>
+            <div class="imgHref sound">
+                <a href="sound.html" title="Колонки">
+                    <img src="TH/sound-menu.png" alt="колонки">
+                    <p>Колонки</p>
+                </a>
+            </div>
+            <div class="imgHref others">
+                <a href="others.html" title="Другая техника">
+                    <img src="TH/other-menu.png" alt="другая техника">
+                    <p>Другая техника</p>
+                </a>
+            </div>
+        </div>
+    </section>
+    <section class="hits">
+        <h3>Хиты продаж</h3>
+        <div class="hit"> 
+            <a href="naushniki.html#hit-naushniki" title="Air Pods 3 premium">
+                <div class="hit1">
+                    <img src="TH/наушники-хит-white.jpg" alt="Air Pods 3 premium">
+                    <p>Air Pods 3 premium (copy)</p>
+                </div>
+            </a>
+            <a href="sound.html#hit-sound" title="Hoco BS48">
+                <div class="hit2">
+                    <img src="TH/колонка-хит-white.jpeg" alt="Колонка беспроводная">
+                    <p>Колонка беспроводная Marshall Emberton (copy lux)</p>
+                </div>
+            </a>
+            <a href="smart-watch.html#hit-watch" title="Apple Watch HK 9 promax+">
+                <div class="hit3">
+                    <img src="TH/AppleWatchHK9promax.jpg" alt="AppleWatchHK9promax">
+                    <p>Apple Watch HK 9 promax+</p>
+                </div>
+            </a>
+        </div>
+    </section>
+    <section class="delivery" id="delivery">
+        <h3>Доставка</h3>
+        <div>
+            <p>Доставка по всей Беларуси:</p>
+            <ul>
+                <li>Европочта. Наложенным платежем. <a href="https://evropochta.by/calc/" title="evropochta"><button>Стоимость доставки</button></a></li>
+                <li>Белпочта. Наложенным платежем. <a href="http://tarifikator.belpost.by/forms/internal/parcel.php" title="belpost"><button>Стоимость доставки</button></a></li>
+                <li>Доставка по Гомелю в согласованное место.</li>
+                <li>Самовывоз.</li>
+            </ul>
+        </div>
+    </section>
+    <section class="footer" id="footer">
+        <h3>Контакты</h3>
+        <div class="phone">
+            <i class="fa-brands fa-viber"></i><i class="fa-solid fa-square-phone"></i>+375 44 462-80-43
+        </div>
+        <div class="icon">
+            <a href="https://www.instagram.com/techno_house.official?igsh=Y25idnl1a2YycWRu" title="instagram" target="_blank" ><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://vk.com/club195958261" title="vk" target="_blank"><i class="fa-brands fa-vk"></i></a>
+        </div> 
+        <p>ИП Цуранов Игорь Евгеньевич</p>
+    </section>
+<script src="technoHouse.js"></script>
+</body>
+</html>

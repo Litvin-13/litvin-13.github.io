@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="forMenu.css">
+    <link rel="icon" href="TH/LogoTitle.png">
+    <link href="fontawesome-free-6.5.2-web/css/fontawesome.css" rel="stylesheet" />
+    <link href="fontawesome-free-6.5.2-web/css/brands.css" rel="stylesheet" />
+    <link href="fontawesome-free-6.5.2-web/css/solid.css" rel="stylesheet" />
+    <title id="title">TechnoHouse.Техника в Беларуси</title>
+</head>
+<body>
+    <header>
+        <a href="#inHead"><button class="inHeader">&#9650;<span>Наверх</span></button></a>
+        <div class="header__burgerMenu">
+            <div>
+                <a href="technoHouse.html"><img src="TH/ЛоготипTH.png" alt="logo" id="logo"></a>
+            </div>
+            <div class="head">
+                <p id="phone"><i class="fa-solid fa-phone"></i> +375 44 462-80-43</p>
+            </div>
+            <div class="burger-menu">
+                <button onclick="change()" class="menu__btn"><span id="spanMenu" class="spanMenu"></span><span id="spanMenu2" class="spanMenu2"></span><span id="spanMenu3" class="spanMenu3"></span></button>
+                <ul id="burger" class="burgerNone" onclick="closeMenu()">
+                    <a href="naushniki.html" title="Наушники"><li>Наушники</li></a>
+                    <a href="smart-watch.html" title="Смарт-часы"><li>Смарт-часы</li></a>
+                    <a href="sound.html" title="Колонки"><li>Колонки</li></a>
+                    <a href="others.html" title="Другая техника"><li>Другая техника</li></a>
+                    <a href="#delivery" title="Доставка"><li>Доставка</li></a>
+                    <a href="#footer" title="Контакты"><li>Контакты</li></a>
+                </ul>
+            </div>    
+        </div>
+        <div class="header__h1" id="inHead">
+            <h1>TehnoHouse. Техника в Беларуси</h1>
+        </div>
+    </header>
+    <section class="menu">
+        <div class="menu hiddenMob">
+        <ul>
+            <a href="naushniki.html" title="Наушники"><li>Наушники</li></a>
+            <a href="smart-watch.html" title="Смарт-часы"><li>Смарт-часы</li></a>
+            <a href="sound.html" title="Колонки"><li>Колонки</li></a>
+            <a href="others.html" title="Другая техника"><li>Другая техника</li></a>
+            <a href="#delivery" title="Доставка"><li>Доставка</li></a>
+            <a href="#footer" title="Контакты"><li>Контакты</li></a>
+        </ul>
+        </div>
+    </section>
+    <section class="lists">
+        <div class="lists__item">
+            <div  class="images">
+                <img src="TH/SupersonicHd08fon.jpg" alt="SupersonicHd08">
+            </div>
+            <div class="lists__description">
+                <p>Фен Supersonic Hd08</p>
+                <button class="price">Цена: ХХ бел. руб.</button>
+                <p>Полная комплектация. Мощность 1600 Вт. Цвет: фуксия. Пять магнитных насадок, три настройки скорости воздушного потока, четыре настройки температурного режима, защина от перегрева,ионизация воздуха и воздушный фильтр, переключатель холодного воздуха.</p>
+            </div>
+        </div>
+        <hr>
+    </section>
+    <section class="delivery" id="delivery">
+        <h3>Доставка</h3>
+        <div>
+            <p>Доставка по всей Беларуси:</p>
+            <ul>
+                <li>Европочта. Наложенным платежем. <a href="https://evropochta.by/calc/" target="evropochta"><button>Стоимость доставки</button></a></li>
+                <li>Белпочта. Наложенным платежем. <a href="http://tarifikator.belpost.by/forms/internal/parcel.php" target="belpost"><button>Стоимость доставки</button></a></li>
+                <li>Доставка по Гомелю в согласованное место.</li>
+                <li>Самовывоз.</li>
+            </ul>
+        </div>
+    </section>
+    <section class="footer" id="footer">
+        <h3>Контакты</h3>
+        <div class="phone">
+            <i class="fa-brands fa-viber"></i><i class="fa-solid fa-square-phone"></i>+375 44 462-80-43
+        </div>
+        <div class="icon">
+            <a href="https://www.instagram.com/techno_house.official?igsh=Y25idnl1a2YycWRu" title="instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://vk.com/club195958261" title="vk"><i class="fa-brands fa-vk"></i></a>
+        </div> 
+        <p>ИП Цуранов Игорь Евгеньевич</p>
+    </section>
+<script src="forMenu.js"></script>
+</body>
+</html>
