@@ -116,7 +116,64 @@ a {
             background-position: center;
         }
     }
+
+        .link_to_projects>a {
+    position: relative;
+    overflow: hidden;
+    }
+
+    .link_to_projects>a::before {
+    content: '';
+    position: absolute;
+    width: 15%;
+    height: 60%;
+    background-color: white;
+    opacity: 30%;
+    padding: 0%;
+    top: 0;
+    left: 0;
+    filter: blur(8px);
+    transform: rotate(70deg);
+    animation-name: blur;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-play-state:running;
+    }
+
+    @keyframes blur {
+            0% {
+                left: -16%;
+            }
+            50% {
+                left: 50%;
+            }
+            100% {
+                left: 100%;
+            }
+    }
+
+    @keyframes blur2 {
+            0% {
+                left: -13%;
+            }
+            50% {
+                left: 53%;
+            }
+            100% {
+                left: 103%;
+            }
+    }
+
+        .link_to_projects>a:first-child:before {
+    animation-name: blur;
+    }
+
+    .link_to_projects>a:last-child::before {
+    animation-name: blur2;
+    }
 }
+
 
 
 
